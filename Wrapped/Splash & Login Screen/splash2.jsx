@@ -97,7 +97,9 @@ const Splash2 = () => {
           </TouchableOpacity>
         
         <Animated.View style={{ opacity: animatedOpacity3 }}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SignUpPro",{genre})}
+          >
             <Text style={styles.textstyle1}>{displayedText2}</Text>
           </TouchableOpacity>
         </Animated.View>

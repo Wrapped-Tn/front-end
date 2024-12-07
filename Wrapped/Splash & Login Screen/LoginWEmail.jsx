@@ -45,11 +45,19 @@ const LoginWEmail = () => {
             setShowSpiner(true)
             const response = await axios.post(PORT + "/auth/login", infoUser); // Corrected URL format            
             if (response.status === 200) {
+                setShowSpiner(false)
                 const token = response.data.token; // Assuming the token is in the response
                 const idUser=response.data.idUser
+                const idAuth=response.data.idAuth
                 await AsyncStorage.setItem('authToken', token);
-                await AsyncStorage.setItem('idUser', idUser.toString());    
-                navigation.navigate("ProfilePage", { token,idUser });
+                await AsyncStorage.setItem('idUser', idUser.toString()); 
+                console.log(response.data);
+                               
+                   if(response.data.role=="brand"){
+                       navigation.navigate("ProfilePro", { token,idUser,idAuth });
+                   }else{
+                    navigation.navigate("ProfilePage", { token,idUser,idAuth });
+                   }
             } else {
                 throw new Error('Login failed'); // Handle non-200 responses
             }

@@ -5,7 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import axios from 'axios'
 import Port from '../../../Port'
 
-const ProfileCard = (idUser) => {
+const ProfileCard = ({idUser,idAuth}) => {
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -14,17 +14,15 @@ const ProfileCard = (idUser) => {
   const [userCard,setUserCard]=useState([])
   const [gradeCard,setGradeCard]=useState([])
 
-  const [idgarde,setIdgrade]=useState(null);
 
- console.log(idgarde);
- 
- const GetUserCart =async(id)=>{
+ const GetUserCart =async(iduser,idauth)=>{
   try{
-    const response= await axios.get(Port+'/users/UserCart/'+id);
+    console.log(iduser,idauth);
+    
+    const response= await axios.post(Port+'/brands/BrandCart',{idbrand:iduser,idauth:idauth});
+    console.log(response.data);
     if(response.status==200){
       setUserCard(response.data)
-      GetGradeCart(response.data.grade)
-
     }
     else{
       console.log(response.status)
@@ -34,31 +32,10 @@ const ProfileCard = (idUser) => {
   }
  }
 
- const GetGradeCart =async(id)=>{
-  try{
-      const response= await axios.get(Port+'/grades/gradename/'+id);
-      if(response.status==200){
-        setGradeCard(response.data)
-        console.log(response.data);
-        
-      }
-    
-  }catch(e){
-    console.log("error :"+e);
-    
-  }
- }
+
 
   useEffect(()=>{
-    GetUserCart(idUser.idUser)
-    // if(!idgarde){
-    //   GetGradeCart(idgarde)
-    //   // setLoad(!load)
-    // }
-    // else{
-    //   GetUserCart(idUser.idUser)
-    //   GetGradeCart(idgarde);
-    // }
+    GetUserCart(idUser,idAuth)
   },[load])
 
   
@@ -71,36 +48,38 @@ const ProfileCard = (idUser) => {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{uri:userCard.profile_picture_url}} // Replace with the actual image URL
+          source={{uri:userCard.profile_picture_url?userCard.profile_picture_url:"https://th.bing.com/th/id/OIP.1mSyfMp-r01kxBYitbubbAHaHa?rs=1&pid=ImgDetMain"}} // Replace with the actual image URL
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>{userCard.full_name}</Text>
-          <Text style={styles.userGrade}>{gradeCard.titre}</Text>
+          <Text style={styles.userName}>{userCard.brand_name}</Text>
+          <Text style={styles.userGrade}>{userCard.account_level}</Text>
         </View>
         {/* Sales and Basket Section */}
         <View style={styles.stats}>
+        <TouchableOpacity onPress={()=>{navigation.navigate("MySales",{gradeId:userCard.grade} )}} >
+          <View style={styles.button1}>
+            <Text style={styles.buttonText}>Upgrade</Text>
+          </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={()=>{navigation.navigate("MySales",{gradeId:userCard.grade} )}} >
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>{gradeCard.sales}</Text>
+            <Text style={styles.statValue}>{userCard.total_sales}</Text>
             <Text style={styles.statLabel}>Sales</Text>
           </View>
           </TouchableOpacity>
-          <View style={styles.statItem}>
+          {/* <View style={styles.statItem}>
             <Text style={styles.statValue}>800</Text>
             <Text style={styles.statLabel}>Basket</Text>
-          </View>
+          </View> */}
         </View>
       </View>
 
       {/* Scrollable Tag Row */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagRow}>
-        <Text style={styles.tag}>option1</Text>
-        <Text style={styles.tag}>option2</Text>
-        <Text style={styles.tag}>option3</Text>
-        <Text style={styles.tag}>option4</Text>
-        <Text style={styles.tag}>option5</Text>
-      </ScrollView>
+      <View style={styles.tagRow}>
+      <Text style={styles.userName}>Bio :</Text>
+      <Text style={styles.userGrade}>""wdvcddffffffffffffffffffffffffffffffffffffffffffffffffffffffv"</Text>
+      </View>
 
       {/* Bottom Buttons */}
       <View style={styles.buttonRow}>
@@ -187,11 +166,13 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   tagRow: {
-    flexDirection: 'row',
-    // justifyContent: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start", // Assure que le contenu est aligné à gauche
     marginVertical: 10,
-    marginTop:35
-  },
+    marginTop: 15,
+    width:"100%"
+  }
+  ,
   tag: {
     backgroundColor: 'rgba(255, 182, 200, 0.31)',
     color: '#AD669E',

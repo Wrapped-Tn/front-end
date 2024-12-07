@@ -68,7 +68,7 @@ const AddImage = ({ setImages, index }) => {  // Ajout de props `setImages` et `
             });
 
             // Redirection après sélection
-            navigation.navigate('AddBrand', { image }); // Navigue vers la page de prévisualisation
+            navigation.navigate('AddBrand', { brands :image }); // Navigue vers la page de prévisualisation
         }
         onClose();
     };

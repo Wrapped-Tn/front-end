@@ -12,7 +12,7 @@ const screenWidth = Dimensions.get('window').width;
 const UpdatePage = () => {
   const navigation = useNavigation();
     const route = useRoute();
-    const { name, grade , idUser } = route.params;
+    const { name, grade , idUser,PDP } = route.params;
 
     const [user,setUser]=useState([])
     const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ const UpdatePage = () => {
             style={styles.gradient}
           />
             <View style={styles.Card}>
-                <UpdateCard fullname={name} grade={grade} idUser={idUser} />
+                <UpdateCard fullname={name} grade={grade} idUser={idUser} PDP={PDP}/>
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>

@@ -17,6 +17,8 @@ import MySales from './Profile/ProfilePage/widgets/MySales';
 import PostDetails from './Profile/PostDetails';
 import AddPost from './Post/AddPost/AddPost';
 import AddBrand from './Post/AddPost/AddBrand';
+import SignUpPro from './Splash & Login Screen/SignUpPro';
+import ProfilePro from './Profile/ProfilePro/ProfilePro'
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -32,11 +34,14 @@ export default function App() {
         <Stack.Screen name="SignIn" options={{ headerShown: false }} component={SignIn}/>
         <Stack.Screen name="ForgetPassword" options={{ headerShown: false }} component={ForgetPassword}/>
         <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/>
+        <Stack.Screen name="SignUpPro" options={{ headerShown: false }} component={SignUpPro}/>
         {/* ///////////////////////////////////PROFILE////////////////////////////////////////////////////// */}
         <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
         <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
         <Stack.Screen name="MySales" options={{ headerShown: false }} component={MySales}/>
+        {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
+        <Stack.Screen name="ProfilePro" options={{ headerShown: false }} component={ProfilePro}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
