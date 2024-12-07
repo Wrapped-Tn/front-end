@@ -12,7 +12,7 @@ const screenWidth = Dimensions.get('window').width;
 const ProfilePage = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { idUser } = route.params;
+  const { idUser,idAuth } = route.params;
 
   const [activeTab, setActiveTab] = useState(0);
   const underlinePosition = useRef(new Animated.Value(0)).current; // This controls the underline position
@@ -39,7 +39,7 @@ const ProfilePage = () => {
           style={styles.gradient}
         />
         <View style={styles.Card}>
-          <ProfileCard idUser={idUser} />
+          <ProfileCard idUser={idUser} idAuth={idAuth} />
         </View>
       </View>
 
