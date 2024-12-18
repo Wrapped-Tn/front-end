@@ -176,8 +176,7 @@ const EmailExisting = async () => {
 
                 <TouchableOpacity
                     style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}
-                    onPress={handleSubmit}
-                >
+                      onPress={handleSubmit}                >
                     <Text style={styles.proceedText}>Next</Text>
                 </TouchableOpacity>
                 {/* {!showOauth&&

@@ -18,7 +18,12 @@ import PostDetails from './Profile/PostDetails';
 import AddPost from './Post/AddPost/AddPost';
 import AddBrand from './Post/AddPost/AddBrand';
 import SignUpPro from './Splash & Login Screen/SignUpPro';
-import ProfilePro from './Profile/ProfilePro/ProfilePro'
+import ProfilePro from './Profile/ProfilePro/ProfilePro';
+import DescoveryPage from './Discovery/Discovery';
+import MyBag from './myBag/MyBag';
+import WhatsHotPage from './WhatsHot/WhatsHot';
+import LayoutWrapper from './widgets/Layout_wrapper';
+
 export default function App() {
   const Stack = createNativeStackNavigator();
 
@@ -36,7 +41,7 @@ export default function App() {
         <Stack.Screen name="NPassword" options={{ headerShown: false }} component={NPassword}/>
         <Stack.Screen name="SignUpPro" options={{ headerShown: false }} component={SignUpPro}/>
         {/* ///////////////////////////////////PROFILE////////////////////////////////////////////////////// */}
-        <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={ProfilePage}/>
+        <Stack.Screen name="ProfilePage" options={{ headerShown: false }} component={() => <LayoutWrapper><ProfilePage /></LayoutWrapper>} />
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
         <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
         <Stack.Screen name="MySales" options={{ headerShown: false }} component={MySales}/>
@@ -46,6 +51,10 @@ export default function App() {
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
         <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
+        {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
+        <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={() => <LayoutWrapper><WhatsHotPage /></LayoutWrapper>} />
+        <Stack.Screen name="descovery" options={{ headerShown: false }} component={() => <LayoutWrapper><DescoveryPage /></LayoutWrapper>} />
+        <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />
       </Stack.Navigator>
     </NavigationContainer>
   );

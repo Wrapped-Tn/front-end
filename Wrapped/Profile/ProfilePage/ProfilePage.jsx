@@ -69,10 +69,7 @@ const ProfilePage = () => {
         {activeTab === 1 && <MyWordrobes />}
       </View>
 
-      {/* Fixed Footer */}
-      <View style={styles.footerContainer}>
-        <Footer idUser={idUser} />
-      </View>
+ 
     </View>
   );
 };
@@ -82,7 +79,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nav: {
-    height: "25%",
+    height: "12%",
+    marginBottom:90
   },
   Card: {
     position: 'absolute',
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: '20%',
+    marginTop: '0%',
     position: 'relative', // Needed for underline positioning
   },
   tab: {
