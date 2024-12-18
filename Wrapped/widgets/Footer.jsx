@@ -9,13 +9,18 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute ,useNavigation } from '@react-navigation/native';
 import FilterPopup from './FilterPopup'; // Import the Popup component
 
 const { width } = Dimensions.get('window');
 
 const FooterWithConcaveShape = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const idUser = route?.params?.idUser ?? null; // Safely extract idUser, default to null if not present
+
+  console.log('User ID:', idUser); // Check if idUser is being logged correctly
+
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
@@ -37,7 +42,12 @@ const FooterWithConcaveShape = () => {
 
   const handleIconPress = (iconName, routeName) => {
     setSelectedIcon(iconName);
-    navigation.navigate(routeName);
+    // Pass idUser as a route param to AddPost and ProfilePage
+    if (routeName === 'AddPost' || routeName === 'ProfilePage' || routeName === 'whatsHot' || routeName === 'descovery') {
+      navigation.navigate(routeName, { idUser });
+    } else {
+      navigation.navigate(routeName);
+    }
   };
 
   const handleCirclePress = () => {
@@ -46,7 +56,6 @@ const FooterWithConcaveShape = () => {
 
   return (
     <View style={styles.container}>
-      {/* Render FilterPopup first so it appears behind the footer */}
       {isPopupVisible && (
         <FilterPopup 
           isPopupVisible={isPopupVisible} 

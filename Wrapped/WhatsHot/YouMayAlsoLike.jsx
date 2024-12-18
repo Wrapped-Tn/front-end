@@ -2,18 +2,8 @@ import React from "react";
 import { ScrollView, Image, Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import PostDetails from "../Post/postDetails/PostDetails";
 
-const PostsGrid = ({ idUser ,articles, searchQuery, navigation }) => {
-  const [showCount, setShowCount] = React.useState(6); // Initially show 4 items
-  const [show, setShow] = React.useState(false);
-
-  // Filter and limit the number of articles based on search query and showCount
-  const filteredArticles = articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.category.toLowerCase().includes(searchQuery.toLowerCase())||
-      article.brand.toLowerCase().includes(searchQuery.toLowerCase())||
-      article.color.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const YouMayAlsoLike = ({ idUser, articles, navigation }) => {
+  const [showCount, setShowCount] = React.useState(6); // Initially show 6 items
 
   // Show more items when "See More" is pressed
   const handleSeeMore = () => {
@@ -22,19 +12,18 @@ const PostsGrid = ({ idUser ,articles, searchQuery, navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.gridContainer}>
-      {filteredArticles.slice(0, showCount).map((article) => (
+      {articles.slice(0, showCount).map((article) => (
         <TouchableOpacity
           key={article.id}
           style={styles.gridItem}
           onPress={() => {
-            navigation.navigate("PostDetails", { idUser:idUser,article: article ,articles:articles});
-            return show && <PostDetails id={article.id} />;
+            navigation.navigate("PostDetails", { idUser:idUser, article: article, articles: articles });
           }}
         >
           <Image source={{ uri: article.images[0].image_url }} style={styles.image} />
         </TouchableOpacity>
       ))}
-      {filteredArticles.length > showCount && (
+      {articles.length > showCount && (
         <TouchableOpacity onPress={handleSeeMore} style={styles.seeMoreButton}>
           <Text style={styles.seeMoreText}>See More</Text>
         </TouchableOpacity>
@@ -64,12 +53,6 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 8,
   },
-  suggestText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333", // Dark text
-  },
   seeMoreButton: {
     marginTop: 10,
     padding: 5,
@@ -82,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostsGrid;
+export default YouMayAlsoLike;

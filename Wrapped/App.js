@@ -20,6 +20,7 @@ import AddBrand from './Post/AddPost/AddBrand';
 import SignUpPro from './Splash & Login Screen/SignUpPro';
 import ProfilePro from './Profile/ProfilePro/ProfilePro';
 import DescoveryPage from './Discovery/Discovery';
+import MyBag from './myBag/MyBag';
 import WhatsHotPage from './WhatsHot/WhatsHot';
 import LayoutWrapper from './widgets/Layout_wrapper';
 
@@ -53,6 +54,7 @@ export default function App() {
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={() => <LayoutWrapper><WhatsHotPage /></LayoutWrapper>} />
         <Stack.Screen name="descovery" options={{ headerShown: false }} component={() => <LayoutWrapper><DescoveryPage /></LayoutWrapper>} />
+        <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, FlatList } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 
 import AppBar from "./AppBar";
@@ -16,8 +16,9 @@ const WhatsHotPage = () => {
   const [articles, setArticles] = useState([]); // Articles for the grid
   const [loading, setLoading] = useState(true); // Loading indicator state
   const [error, setError] = useState(null); // Error state
-
-  // 🔄 Fetch all articles from the backend
+  const route = useRoute();
+  const idUser = route?.params?.idUser ?? null; 
+  // Fetch all articles from the backend
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -31,9 +32,10 @@ const WhatsHotPage = () => {
           setArticles(response.data.articles || []); // Handle if data is nested
         }
       } catch (error) {
-        setError('Error fetching articles. Please try again later.');
+        console.error('Error fetching articles:', error);
+        setError('Error fetching articles. Please try again later.',error);
         console.log('====================================');
-        console.log("articles",response.data);
+        console.log("articles",response.data, "error");
         console.log('====================================');
         console.error('Error fetching articles:', error);
       } finally {
@@ -77,6 +79,7 @@ const WhatsHotPage = () => {
               setSuggestions={setSuggestions}
             />
             <PostsGrid
+              idUser={idUser}
               articles={articles}
               searchQuery={searchQuery}
               navigation={navigation}
