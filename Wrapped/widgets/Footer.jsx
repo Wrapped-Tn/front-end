@@ -1,91 +1,119 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import icons
-import { useRoute, useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute ,useNavigation } from '@react-navigation/native';
+import FilterPopup from './FilterPopup'; // Import the Popup component
 
 const { width } = Dimensions.get('window');
-const FooterWithConcaveShape = () => {
 
+const FooterWithConcaveShape = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { idUser } = route.params;
-console.log(idUser);
+  const idUser = route?.params?.idUser ?? null; // Safely extract idUser, default to null if not present
 
-  // State to manage the selected icon
+  console.log('User ID:', idUser); // Check if idUser is being logged correctly
+
   const [selectedIcon, setSelectedIcon] = useState(null);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  // Handle icon click
-  const handleIconPress = (iconName) => {
+  // Listen for keyboard events
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
+      setIsKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
+      setIsKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const handleIconPress = (iconName, routeName) => {
     setSelectedIcon(iconName);
-    if(iconName==="person"){
-      navigation.navigate("ProfilePage",{idUser:idUser} );
-    }
-    if(iconName==="add"){
-      navigation.navigate("AddPost",{idUser:idUser});
+    // Pass idUser as a route param to AddPost and ProfilePage
+    if (routeName === 'AddPost' || routeName === 'ProfilePage' || routeName === 'whatsHot' || routeName === 'descovery') {
+      navigation.navigate(routeName, { idUser });
+    } else {
+      navigation.navigate(routeName);
     }
   };
 
-  // Handle circle click
   const handleCirclePress = () => {
-    console.log('Circle clicked!');
-    // Add logic for circle press here
+    setIsPopupVisible(!isPopupVisible);
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.footer}>
-        {/* The concave shape */}
-        <Svg height="60" width={width} viewBox={`0 0 ${width} 60`} style={styles.svg}>
-          <Path
-            d={`M0 -3 H${width} V100 H0 Z M${width / 2 - 55} -8 Q${width / 2} 85 ${width / 2 + 55} -8 Z`}
-            fill="white"  // Adjust this to match your background color
-            stroke="#ccc"
-            strokeWidth="0"
-          />
-        </Svg>
+      {isPopupVisible && (
+        <FilterPopup 
+          isPopupVisible={isPopupVisible} 
+          setIsPopupVisible={setIsPopupVisible} 
+        />
+      )}
 
-        {/* The circle with logo (make clickable) */}
-        <TouchableOpacity style={styles.circle} onPress={handleCirclePress}>
-          <Image source={require('../assets/Logo&Name.png')} style={styles.logo} />
-        </TouchableOpacity>
+      {!isKeyboardVisible && (
+        <View style={styles.footer}>
+          <Svg height="60" width={width} viewBox={`0 0 ${width} 60`} style={styles.svg}>
+            <Path
+              d={`M0 -3 H${width} V100 H0 Z M${width / 2 - 55} -8 Q${width / 2} 85 ${width / 2 + 55} -8 Z`}
+              fill="white"
+              stroke="#ccc"
+              strokeWidth="0"
+            />
+          </Svg>
 
-        {/* Icons */}
-        <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={() => handleIconPress('flame')}>
-            <Icon
-              name="flame-outline"
-              size={30}
-              color={selectedIcon === 'flame' ? '#AD669E' : 'black'}
-              style={styles.icon}
-            />
+          <TouchableOpacity style={styles.circle} onPress={handleCirclePress}>
+            <Image source={require('../assets/Logo&Name.png')} style={styles.logo} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleIconPress('eye')}>
-            <Icon
-              name="eye-outline"
-              size={30}
-              color={selectedIcon === 'eye' ? '#AD669E' : 'black'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleIconPress('add')}>
-            <Icon
-              name="add-outline"
-              size={30}
-              color={selectedIcon === 'add' ? '#AD669E' : 'black'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleIconPress('person')}>
-            <Icon
-              name="person-outline"
-              size={30}
-              color={selectedIcon === 'person' ? '#AD669E' : 'black'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+
+          <View style={styles.iconContainer}>
+            <TouchableOpacity onPress={() => handleIconPress('flame', 'whatsHot')}>
+              <Icon
+                name="flame-outline"
+                size={30}
+                color={selectedIcon === 'flame' ? '#AD669E' : 'black'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleIconPress('eye', 'descovery')}>
+              <Icon
+                name="eye-outline"
+                size={30}
+                color={selectedIcon === 'eye' ? '#AD669E' : 'black'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleIconPress('add', 'AddPost')}>
+              <Icon
+                name="add-outline"
+                size={30}
+                color={selectedIcon === 'add' ? '#AD669E' : 'black'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleIconPress('person', 'ProfilePage')}>
+              <Icon
+                name="person-outline"
+                size={30}
+                color={selectedIcon === 'person' ? '#AD669E' : 'black'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -94,9 +122,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
+    backgroundColor: '#F8F8F8',  
+    zIndex: 9999,
   },
   footer: {
-    backgroundColor: '#F0F0F000',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'transparent',
     height: 80,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -107,23 +140,17 @@ const styles = StyleSheet.create({
   },
   circle: {
     position: 'absolute',
-    bottom: 30, // Adjust to position the circle correctly
-    width: 80, // Adjust size
+    bottom: 30,
+    width: 80,
     height: 80,
     borderRadius: 40,
     backgroundColor: '#FFB6C8',
-    borderWidth: 0,
-    borderColor: '#ccc',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 5,
   },
   logo: {
-    width: 60, // Adjust size
+    width: 60,
     height: 60,
     resizeMode: 'contain',
   },
@@ -132,13 +159,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '110%',
-    paddingHorizontal: 0,
     position: 'absolute',
     bottom: 10,
   },
   icon: {
-    paddingHorizontal: 20, // Adjust spacing between icons
-    
+    paddingHorizontal: 20,
   },
 });
 

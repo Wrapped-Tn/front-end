@@ -1,5 +1,5 @@
 import React, { useState, useRef , useEffect} from "react";
-import { useRoute, useNavigation} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { Alert } from 'react-native';
 
 import {
@@ -26,13 +26,13 @@ import {
   PanGestureHandler,
 } from "react-native-gesture-handler";
 import axios from "axios";
-import PostsGrid from "../WhatsHot/YouMayAlsoLike";
-
+import Port from "../../Port";
+import PostPostsGrids from "../../WhatsHot/PostsGrid";
 
 
 const PostDetails = ({ navigation }) => {
   const route = useRoute();
-  const { article, articles,idUser } = route.params;
+  const { article, articles } = route.params;
   const [showTags, setShowTags] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -46,9 +46,10 @@ const PostDetails = ({ navigation }) => {
   const [selectedColor, setSelectedColor] = useState(""); 
   const [details, setDetails] = useState([]); 
   const [visibleItems, setVisibleItems] = useState(4);
+
   const commentsRef = useRef();
   const commentInputRef = useRef();
-  const Port2 = 'http://192.168.31.82:3000';//update this port
+  const Port2 = 'http://192.168.1.14:3000';//update this port
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -144,7 +145,7 @@ const PostDetails = ({ navigation }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            users_id: idUser, // Replace with the actual user ID
+            users_id: 1, // Replace with the actual user ID
             articles_id: article.id, // Replace with the actual article ID
             content: newComment,
           }),
@@ -194,8 +195,8 @@ const PostDetails = ({ navigation }) => {
       'Item added to cart',
       "",
       [
-        { text: 'See More Items', style: 'destructive',onPress: () => scrollToComments()  },
-        { text: 'See Cart', style: 'destructive', onPress: () => navigation.navigate("myBag",{articles:articles}) },
+        { text: 'See More Items', style: 'cancel' },
+        { text: 'See Cart', style: 'destructive', onPress: () => handleSeeCart() },
       ],
       { cancelable: true }
     );
@@ -206,8 +207,7 @@ const PostDetails = ({ navigation }) => {
   
   // Handle "See More" button press (redirect to item details page)
   const handleSeeMore = () => {
-    commentsRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
-    setTimeout(() => commentInputRef.current?.focus(), 300)
+    // Navigate to the item details page
   };
 
   if (!details) {
@@ -353,9 +353,13 @@ const PostDetails = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-          <Text style={styles.sectionTitle}>You May Also Like</Text>
-          <PostsGrid articles={articles} />
+
+          
         </ScrollView>
+<Text>Hello</Text>
+{/* <PostsGrid
+              articles={articles}/> */}
+        {/* Modal for selecting size, color, and adding to cart */}
         <Modal
   visible={modalVisible}
   animationType="slide"
@@ -696,12 +700,6 @@ const styles = StyleSheet.create({
   seeCartText: {
     color: "white",
     fontSize: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 15,
   },
 });
 

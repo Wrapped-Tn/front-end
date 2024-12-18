@@ -171,20 +171,20 @@ const styles = StyleSheet.create({
   },
   statItem: {
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: 8,
     backgroundColor: 'rgba(255, 182, 200, 0.31)',
     padding:10,
     borderRadius:8,
-    minWidth:70,
-    maxWidth:100
+    minWidth:50,
+    maxWidth:60
   },
   statValue: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#AD669E',
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 12,
     color: 'black',
   },
   tagRow: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     paddingTop:2,
     marginHorizontal: 5,
     borderRadius: 20,
-    fontSize:16
+    fontSize:13
     
   },
   buttonRow: {
