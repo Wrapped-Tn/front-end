@@ -4,9 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SettingsCard from './widgets/SettingsCard'
 import SettingsForm from './widgets/LinksSettings'
 import Footer from '../../widgets/Footer';
+import { useRoute, useNavigation } from '@react-navigation/native';
+
 const screenWidth = Dimensions.get('window').width;
 const SettingsPage = () => {
-    
+  const navigation = useNavigation();
+    const route = useRoute();
+  const { name, grade , idUser,PDP } = route.params;
+
     return(
         <View style={styles.container}>
         {/* Navigation Section */}
@@ -18,7 +23,7 @@ const SettingsPage = () => {
             style={styles.gradient}
           />
             <View style={styles.Card}>
-                <SettingsCard/>
+                <SettingsCard fullname={name} grade={grade} idUser={idUser} PDP={PDP}/>
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>

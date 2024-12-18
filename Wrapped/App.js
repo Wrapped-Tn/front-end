@@ -21,7 +21,7 @@ import SignUpPro from './Splash & Login Screen/SignUpPro';
 import ProfilePro from './Profile/ProfilePro/ProfilePro'
 export default function App() {
   const Stack = createNativeStackNavigator();
-
+  
   return (
     <NavigationContainer>
       <StatusBar style="auto" />

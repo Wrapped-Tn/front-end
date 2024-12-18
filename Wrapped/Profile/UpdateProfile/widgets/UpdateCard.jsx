@@ -2,11 +2,50 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ScrollView,Modal  } from 'react-native';
 import CameraIcon from '../../../assets/icon_camera.png';
 import * as ImagePicker from 'expo-image-picker'; // For Expo, replace with your image picker if not using Expo
+import axios from "axios";
+import PORT from '../../../Port';
 
-const UpdateCard = ({ fullname, grade, idUser, PDP }) => {
+const UpdateCard = ({ fullname, grade, idUser,idAuth, PDP }) => {
   const [profileImage, setProfileImage] = useState(PDP);
   const [imageUpdated, setImageUpdated] = useState(false); 
   const [showConfirmation, setShowConfirmation] = useState(false); // Show confirmation modal
+
+//////////////////////////////////////API////////////////////////////////////////////////////////////////////////////
+const confirmUpdate = async () => {
+  try {
+    // Lire le fichier local et convertir en base64
+    const base64File = await FileSystem.readAsStringAsync(selectedImage.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const file = `data:image/jpeg;base64,${base64File}`;
+
+    const response = await axios.put(
+      `${PORT}/api/users/profilepic/${idAuth}`,
+      {file},
+      
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      Alert.alert("Success", "Profile image updated successfully!");
+    } else {
+      Alert.alert("Error", "Failed to update profile image.");
+    }
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    Alert.alert("Error", "An error occurred while updating the profile image.");
+  }
+
+  setShowConfirmation(false);  // Fermer la modale
+  setImageUpdated(false);      // Réinitialiser l'état
+};
+//////////////////////////////////////API////////////////////////////////////////////////////////////////////////////
+
+
 
   const pickImage = async () => {
     const options = [
@@ -41,8 +80,11 @@ const UpdateCard = ({ fullname, grade, idUser, PDP }) => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setProfileImage(result.uri);
+    if (!result.canceled) {
+      setProfileImage({
+        uri: result.assets[0].uri,
+        type: result.assets[0].type, // Type MIME détecté (image/jpeg, image/png, etc.)
+    });
       setImageUpdated(true); 
     }
   };
@@ -54,8 +96,11 @@ const UpdateCard = ({ fullname, grade, idUser, PDP }) => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setProfileImage(result.uri);
+    if (!result.canceled) {
+      setProfileImage({
+        uri: result.assets[0].uri,
+        type: result.assets[0].type, // Type MIME détecté (image/jpeg, image/png, etc.)
+    });
       setImageUpdated(true); 
     }
   };
@@ -74,18 +119,14 @@ const UpdateCard = ({ fullname, grade, idUser, PDP }) => {
     setImageUpdated(false); // Reset the state
   };
 
-  const confirmUpdate = () => {
-    console.log('Image updated:', profileImage);
-    setShowConfirmation(false); // Close confirmation modal
-    setImageUpdated(false); // Reset the state
-  };
+
 
   return (
     <View style={styles.card}>
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{ uri: profileImage }} // Updated image source
+          source={{ uri: PDP }} // Updated image source
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
@@ -105,9 +146,9 @@ const UpdateCard = ({ fullname, grade, idUser, PDP }) => {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button} onPress={handleImageUpdateConfirmation}>
+        <View style={styles.button} >
           <Text style={styles.buttonText}>Update</Text>
-        </TouchableOpacity>
+        </View>
       </View>
 
       {/* Confirmation Modal */}
@@ -185,6 +226,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: 2,
     borderColor: '#AD669E',
+    position:"absolute",
+    top:"50%",
   },
   ImageText: {
     color: '#AD669E',
@@ -194,7 +237,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: '20%',
+    marginTop: '25%',
   },
   button: {
     flex: 1,

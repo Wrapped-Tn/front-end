@@ -2,31 +2,31 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import iconSettings from '../../../assets/settings.png';
 
-const SettingsCard = () => {
+const SettingsCard = ({ fullname, grade, idUser, PDP }) => {
 
     return(
         <View style={styles.card}>
         {/* User Info Section */}
         <View style={styles.userInfo}>
           <Image
-            source={{ uri: 'https://via.placeholder.com/50' }} // Replace with the actual image URL
+            source={{ uri:  PDP }} // Replace with the actual image URL
             style={styles.profileImage}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>Anant Raj</Text>
-            <Text style={styles.userGrade}>Grade</Text>
+            <Text style={styles.userName}>{fullname}</Text>
+            <Text style={styles.userGrade}>{grade}</Text>
           </View>
         </View>
 
         {/* Bottom Buttons */}
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.button}>
+          <View style={styles.button}>
           <Image
             source={iconSettings}
             style={{width:24,height:24,marginRight:15,marginLeft:10}}
             />
             <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
     )

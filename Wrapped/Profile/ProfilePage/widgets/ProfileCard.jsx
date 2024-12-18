@@ -8,13 +8,12 @@ import Port from '../../../Port'
 const ProfileCard = ({idUser,idAuth}) => {
   const navigation = useNavigation();
   const route = useRoute();
-console.log(idUser,idAuth);
 
   const [load,setLoad]=useState(false)
 
   const [userCard,setUserCard]=useState([])
   const [gradeCard,setGradeCard]=useState([])
-
+  const [userImg,setUserImg]=useState("https://th.bing.com/th/id/OIP.1mSyfMp-r01kxBYitbubbAHaHa?rs=1&pid=ImgDetMain")
   const [idgarde,setIdgrade]=useState(null);
 
  console.log(idgarde);
@@ -73,7 +72,7 @@ console.log(idUser,idAuth);
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{uri:userCard.profile_picture_url?userCard.profile_picture_url:"https://th.bing.com/th/id/OIP.1mSyfMp-r01kxBYitbubbAHaHa?rs=1&pid=ImgDetMain"}} // Replace with the actual image URL
+          source={{uri:userCard.profile_picture_url?userCard.profile_picture_url:userImg}} // Replace with the actual image URL
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
@@ -108,7 +107,7 @@ console.log(idUser,idAuth);
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button1}
         onPress={()=>{
-          navigation.navigate("SettingsPage", )
+          navigation.navigate("SettingsPage",{name:userCard.full_name,grade:gradeCard.titre,idUser,PDP:userCard.profile_picture_url?userCard.profile_picture_url:userImg} )
         }}
         >
             <Image
@@ -119,7 +118,7 @@ console.log(idUser,idAuth);
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}
         onPress={()=>{
-          navigation.navigate("UpdatePage",{name:userCard.full_name,grade:gradeCard.titre,idUser} );
+          navigation.navigate("UpdatePage",{name:userCard.full_name,grade:gradeCard.titre,idUser,idAuth,PDP:userCard.profile_picture_url?userCard.profile_picture_url:userImg} );
         }}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
