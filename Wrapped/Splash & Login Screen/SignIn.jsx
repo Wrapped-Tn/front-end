@@ -76,7 +76,7 @@ const EmailExisting = async () => {
         if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address.');
             isValid = false;
-        } else if (!emailExsit) {  // Use await here
+        } else if (emailExsit) {  // Use await here
             setEmailError('Email exists already.');
             isValid = false;
         } else {
