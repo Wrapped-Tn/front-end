@@ -67,6 +67,39 @@ const validateFullName = (fullname) => {
 //     encoding: FileSystem.EncodingType.Base64,
 //   }))
 
+// const uploadImage = async () => {
+//     if (!selectedImage) {
+//       alert('Please select an image');
+//       return;
+//     }
+  
+//     try {
+//       // Lire le fichier local et convertir en base64
+//       const base64File = await FileSystem.readAsStringAsync(selectedImage.uri, {
+//         encoding: FileSystem.EncodingType.Base64,
+//       });
+  
+//       // Créer un objet JSON avec le fichier encodé
+//       const file = `data:image/jpeg;base64,${base64File}`;
+  
+//       // Envoyer au backend
+//       const response = await axios.post(`${Port}/uploads`, { file }, {
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       });
+  
+//       if (response.status === 201) {
+//         console.log('Image uploaded successfully:', response.data);
+//         return response.data.url;
+//       }
+//     } catch (error) {
+//       console.error('Error uploading image:', error.response ? error.response.data : error.message);
+//     }
+//   };
+
+
+
 const uploadImage = async () => {
     if (!selectedImage) {
       alert('Please select an image');
@@ -74,18 +107,24 @@ const uploadImage = async () => {
     }
   
     try {
-      // Lire le fichier local et convertir en base64
-      const base64File = await FileSystem.readAsStringAsync(selectedImage.uri, {
-        encoding: FileSystem.EncodingType.Base64,
+      // Create form data
+      const formData = new FormData();
+      
+      // Get the file name from the URI
+      const uriParts = selectedImage.uri.split('/');
+      const fileName = uriParts[uriParts.length - 1];
+  
+      // Append the file to form data
+      formData.append('file', {
+        uri: selectedImage.uri,
+        type: 'image/jpeg', // You might want to detect this dynamically
+        name: fileName,
       });
   
-      // Créer un objet JSON avec le fichier encodé
-      const file = `data:image/jpeg;base64,${base64File}`;
-  
-      // Envoyer au backend
-      const response = await axios.post(`${Port}/props/upload`, { file }, {
+      // Send to backend
+      const response = await axios.post(`${Port}/upload`, formData, {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       });
   
@@ -95,9 +134,14 @@ const uploadImage = async () => {
       }
     } catch (error) {
       console.error('Error uploading image:', error.response ? error.response.data : error.message);
+      throw error; // Propagate the error to handle it in the calling function
     }
   };
+
+
 // Fonction de validation du numéro de téléphone
+
+
 const validatePhoneNumber = (phonenbr) => {
     const phonePattern = /^[0-9]{8}$/; // Ajuste selon le format de ton pays
     if (!phonenbr || !phonePattern.test(phonenbr)) {
