@@ -100,12 +100,12 @@ const validateFullName = (fullname) => {
 
 
 
-const uploadImage = async () => {
+const uploadImage = async (userId) => {
     if (!selectedImage) {
       alert('Please select an image');
       return;
     }
-  
+     
     try {
       // Create form data
       const formData = new FormData();
@@ -113,13 +113,17 @@ const uploadImage = async () => {
       // Get the file name from the URI
       const uriParts = selectedImage.uri.split('/');
       const fileName = uriParts[uriParts.length - 1];
-  
-      // Append the file to form data
+      console.log('**********userId*********',userId);
+      
+      formData.append('fileUploadpicture', 'profil');
+      formData.append('userId', userId);
+      
       formData.append('file', {
         uri: selectedImage.uri,
-        type: 'image/jpeg', // You might want to detect this dynamically
+        type: 'image/jpeg', 
         name: fileName,
       });
+
   
       // Send to backend
       const response = await axios.post(`${Port}/upload`, formData, {
@@ -186,7 +190,7 @@ const validateBirthDate = (birthDate) => {
 };
 
 // Fonction pour nettoyer et préparer les données de l'utilisateur
-const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion, birthDate, password,img) => {
+const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion, birthDate, password) => {
     const sanitizedEmail = email;
     const sanitizedFullname = fullname;
     const sanitizedPhone = phonenbr;
@@ -199,7 +203,6 @@ const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion
             full_name: sanitizedFullname,
             phone_number: sanitizedPhone,
             sexe: genreA === 'man' ? 'male' : 'female',
-            profile_picture_url: img,
             grade: idgrade,
             region: selectedRegion,
             birthdate: birthDate,
@@ -221,7 +224,11 @@ const addUser = async (userData, setShowSpiner, navigation, genre) => {
 
             const response = await axios.post(`${Port}/users/`, userData);
             if (response.status === 200) {
-                setShowSpiner(false); // Arrêter le spinner
+                const img = await uploadImage(response?.data?.userId);
+                if(!img){
+                    alert('Error uploading image');
+                }
+                setShowSpiner(false); 
                 navigation.navigate("LoginWEmail", { genre });
             } else {
                 throw new Error('Failed to add user'); // Gère les autres statuts
@@ -249,14 +256,9 @@ const AddNewUser = async () => {
     try {
         console.log(PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password));
 
-        const img = await uploadImage();
         
-       
-        
-        console.log(img);
-
         // Attends que la fonction prepareUserData retourne les données avant de continuer
-        const userData = await PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password, img);
+        const userData = await PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password);
 
         // Vérifie si les données utilisateur sont correctement préparées
         if (!userData) {
@@ -460,7 +462,7 @@ const AddNewUser = async () => {
                 </View>
                     {!showSpiner?
                 <TouchableOpacity style={[styles.proceedButton, { backgroundColor: genreA === 'man' ? '#2C9AEE' : '#AD669E' }]}
-                onPress={()=>{AddNewUser(),uploadImage();}}
+                onPress={()=>{AddNewUser()}}
                 >
                     <Text style={styles.proceedText}>Proceed</Text>
                 </TouchableOpacity>
