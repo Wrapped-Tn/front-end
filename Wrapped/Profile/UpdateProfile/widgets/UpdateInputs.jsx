@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Button, Alert,TouchableOpacity ,ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from "axios";
-import PORT from '../../../Port';
+import {PORT} from '../../../Port';
 
 const UserForm = (OneUser) => {
   const User=OneUser.OneUser

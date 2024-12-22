@@ -7,7 +7,7 @@ import AppBar from "./AppBar";
 import SearchBar from "./SearchBar";
 import SuggestionsList from "./SuggestionsList";
 import PostsGrid from "./PostsGrid";
-import Port from "../Port";
+import {Port} from "../Port";
 
 const WhatsHotPage = () => {
   const navigation = useNavigation();

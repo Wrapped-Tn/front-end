@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput , ScrollView, KeyboardAvoidingView, Platform} from "react-native";
 import { Select, Box, CheckIcon, Center, NativeBaseProvider, Spinner, HStack, Heading ,Actionsheet, useDisclose} from "native-base";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
-import Port from '../Port'
+import {Port} from '../Port'
 import { err } from 'react-native-svg';
 import * as FileSystem from 'expo-file-system';
 
@@ -36,25 +36,35 @@ const BrandDet = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
 
     ////////////////////////////////////////////////////////////////
-    const uploadImage = async () => {
+    const uploadImage = async (userId) => {
         if (!selectedImage) {
           alert('Please select an image');
           return;
         }
-      
+         
         try {
-          // Lire le fichier local et convertir en base64
-          const base64File = await FileSystem.readAsStringAsync(selectedImage.uri, {
-            encoding: FileSystem.EncodingType.Base64,
+          // Create form data
+          const formData = new FormData();
+          
+          // Get the file name from the URI
+          const uriParts = selectedImage.uri.split('/');
+          const fileName = uriParts[uriParts.length - 1];
+          console.log('**********userId*********',userId);
+          
+          formData.append('fileUploadpicture', 'profil');
+          formData.append('userId', userId);
+          formData.append('typesignup','brand');
+          formData.append('file', {
+            uri: selectedImage.uri,
+            type: 'image/jpeg', 
+            name: fileName,
           });
+    
       
-          // Créer un objet JSON avec le fichier encodé
-          const file = `data:image/jpeg;base64,${base64File}`;
-      
-          // Envoyer au backend
-          const response = await axios.post(`${Port}/props/upload`, { file }, {
+          // Send to backend
+          const response = await axios.post(`${Port}/upload`, formData, {
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'multipart/form-data',
             },
           });
       
@@ -64,6 +74,7 @@ const BrandDet = () => {
           }
         } catch (error) {
           console.error('Error uploading image:', error.response ? error.response.data : error.message);
+          throw error; // Propagate the error to handle it in the calling function
         }
       };
 //////////////////////////////////////////////////////////////////////////////
@@ -160,11 +171,11 @@ const validateBirthDate = (birthDate) => {
 //////////////////////////////////////////////////////////////////////////////
 
 // Fonction pour nettoyer et préparer les données de l'utilisateur
-const PrepareUserData = async (email, fullname, phonenbr, selectedRegion, password,img) => {
+const PrepareUserData = async (email, fullname, phonenbr, selectedRegion, password) => {
     const sanitizedEmail = email;
     const sanitizedFullname = fullname;
     const sanitizedPhone = phonenbr;
-    console.log(email, fullname, phonenbr, selectedRegion, password,img);
+    console.log(email, fullname, phonenbr, selectedRegion, password);
     
     try {
        
@@ -173,7 +184,6 @@ const PrepareUserData = async (email, fullname, phonenbr, selectedRegion, passwo
             password: password, 
             brand_name: sanitizedFullname,
             phone_number: sanitizedPhone,
-            profile_picture_url: img,
             region: selectedRegion
         };
     } catch (error) {
@@ -188,6 +198,11 @@ const addBrand = async (userData, setShowSpiner, navigation, genre) => {
     try {
             const response = await axios.post(`${Port}/brands/create`, userData);
             if (response.status === 201) {
+                console.log('User added successfully:', response.data);
+                const img = await uploadImage(response.data.brandId);
+                if (img) {
+                    console.log('Image uploaded successfully:', img);
+                }
                 setShowSpiner(false); // Arrêter le spinner
                 navigation.navigate("LoginWEmail", { genre });
             } else {
@@ -218,14 +233,9 @@ const AddNewBrand = async () => {
     try {
         console.log(PrepareUserData(emailA, brandName, phonenbr, selectedRegion, passwordA));
         
-        const img = await uploadImage();
-        
-       
-        
-        console.log(img);
 
         // Attends que la fonction prepareUserData retourne les données avant de continuer
-        const userData = await PrepareUserData(emailA, brandName, phonenbr, selectedRegion, passwordA, img);
+        const userData = await PrepareUserData(emailA, brandName, phonenbr, selectedRegion, passwordA);
 
         // Vérifie si les données utilisateur sont correctement préparées
         if (!userData) {
@@ -337,6 +347,11 @@ const AddNewBrand = async () => {
 
 
     return (
+        <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <NativeBaseProvider>
         <View style={styles.container}>
             <LinearGradient
@@ -440,6 +455,8 @@ const AddNewBrand = async () => {
             </LinearGradient>
         </View>
         </NativeBaseProvider>
+           </ScrollView>
+           </KeyboardAvoidingView>
     );
 }
 

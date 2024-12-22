@@ -26,7 +26,7 @@ import {
   PanGestureHandler,
 } from "react-native-gesture-handler";
 import axios from "axios";
-import Port from "../../Port";
+import {Port} from "../../Port";
 import PostPostsGrids from "../../WhatsHot/PostsGrid";
 
 

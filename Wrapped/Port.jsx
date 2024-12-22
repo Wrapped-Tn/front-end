@@ -6,6 +6,6 @@
 // const PORT='http:/192.168.230.69:3000/api'
 const PORT='http://192.168.43.137:3000/api'
 
+const PORT_URL = 'http://192.168.43.137:3000'
 
-
-export default PORT
+export  {PORT_URL, PORT}

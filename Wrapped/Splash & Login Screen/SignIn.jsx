@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, TextInput, Alert } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { IconButton, Icon, NativeBaseProvider  } from 'native-base';
@@ -9,7 +9,7 @@ import GoogleLogoW from "../assets/googleLogoW.png";
 import FbLogoW from "../assets/fbLogoW.png";
 import LogoWarpeed from '../assets/logo2.png';
 import axios from 'axios';
-import PORT from '../Port'
+import {PORT} from '../Port'
 
 
 const SignIn = () => {
@@ -107,7 +107,13 @@ const EmailExisting = async () => {
 
     return (
         <NativeBaseProvider>
-
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          
         <View style={styles.container}>
             <LinearGradient
                 colors={genre === 'man' ? ['#2C9AEE', '#ABC0FF'] : ['#AD669E', '#FFB6C8']}
@@ -134,10 +140,11 @@ const EmailExisting = async () => {
                         <TextInput
                             value={email}
                             onChangeText={setEmail}
-                            style={[styles.input, { borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
+                            style={[styles.input, { flex: 1, borderColor: genre === 'man' ? '#1870B3' : '#AD669E', color: genre === 'man' ? '#1870B3' : '#AD669E' }]}
                             placeholder="Email"
                             placeholderTextColor={genre === 'man' ? '#1870B3' : '#AD669E'}
                         />
+                       
                     </View>
                         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
@@ -173,12 +180,14 @@ const EmailExisting = async () => {
                     </View>
                     {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
                 </View>
-
+                <View style={styles.buttonContainer}> 
                 <TouchableOpacity
                     style={[styles.proceedButton, { backgroundColor: genre === 'man' ? '#2C9AEE' : '#AD669E' }]}
                       onPress={handleSubmit}                >
                     <Text style={styles.proceedText}>Next</Text>
                 </TouchableOpacity>
+                </View>
+
                 {/* {!showOauth&&
                 <>
                 <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: '700' }}>Or</Text>              
@@ -202,9 +211,12 @@ const EmailExisting = async () => {
                 </View>
                 </>
                 } */}
-            </LinearGradient>
-        </View>
-        </NativeBaseProvider>
+              </LinearGradient>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </NativeBaseProvider>
 
     );
 };
@@ -232,8 +244,8 @@ const styles = StyleSheet.create({
         marginRight: "8%",
     },
     logo1: {
-        width: "45%",
-        height: "25%",
+        width: 180, 
+        height: 200, 
     },
     textstyle: {
         fontSize: 24,
@@ -241,7 +253,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     inputContainer: {
-        marginTop: '-12%',
+       
         width: '100%',
         marginBottom: "10%",
     },
@@ -289,15 +301,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10,
     },
+    buttonContainer: {
+        width: '100%',
+        position: 'absolute',
+        bottom: 50,  // Adjust this value as needed
+        paddingHorizontal: 20,
+    },
+
     proceedButton: {
         borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingVertical: 15,  // Increased from 10
         width: '100%',
-        height: '8%',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 20,
     },
     proceedText: {
         color: '#FFFFFF',

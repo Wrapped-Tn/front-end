@@ -10,7 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
-import Port from '../Port'
+import {Port} from '../Port'
 import { err } from 'react-native-svg';
 import * as FileSystem from 'expo-file-system';
 
@@ -117,7 +117,7 @@ const uploadImage = async (userId) => {
       
       formData.append('fileUploadpicture', 'profil');
       formData.append('userId', userId);
-      
+      formData.append('typesignup','user');
       formData.append('file', {
         uri: selectedImage.uri,
         type: 'image/jpeg', 

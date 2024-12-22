@@ -6,13 +6,13 @@ import UserForm from './widgets/UpdateInputs';
 import Footer from '../../widgets/Footer';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import PORT from '../../Port';
+import {PORT} from '../../Port';
 
 const screenWidth = Dimensions.get('window').width;
 const UpdatePage = () => {
   const navigation = useNavigation();
     const route = useRoute();
-    const { name, grade , idUser,idAuth,PDP } = route.params;
+    const { name, grade , idUser,idAuth,PDP ,userCards} = route.params;
 
     const [user,setUser]=useState([])
     const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ const UpdatePage = () => {
             style={styles.gradient}
           />
             <View style={styles.Card}>
-                <UpdateCard fullname={name} grade={grade} idUser={idUser} idAuth={idAuth} PDP={PDP}/>
+                <UpdateCard userdata={userCards} fullname={name} grade={grade} idUser={idUser} idAuth={idAuth} PDP={PDP}/>
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>
