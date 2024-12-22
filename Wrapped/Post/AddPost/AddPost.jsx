@@ -1,24 +1,26 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import AddImage from './widgets/AddImage.jsx';
 import InputsAsk from './widgets/InputsAsk.jsx';
 import plusIcon from '../../assets/plus.png';
-import Footer from '../../widgets/Footer.jsx'
+import Footer from '../../widgets/Footer.jsx';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 const AddPost = ({ routee }) => {
   const { brands = [] } = routee?.params || {};
   const route = useRoute();
   const { idUser } = route.params;
-console.log(idUser);
 
   const [images, setImages] = useState([]);
-  const [addImageComponents, setAddImageComponents] = useState([<AddImage setImages={setImages} key={0} index={0} />]);
+  const [addImageComponents, setAddImageComponents] = useState([
+    <AddImage setImages={setImages} key={0} index={0} />
+  ]);
 
   const [description, setDescription] = useState('');
   const [compositions, setCompositions] = useState('');
   const [occasion, setOccasion] = useState('');
   const [infoBrand, setInfoBrand] = useState(brands);
+
   const handleAddImage = () => {
     const newIndex = addImageComponents.length;
     setAddImageComponents([
@@ -26,7 +28,6 @@ console.log(idUser);
       <AddImage setImages={setImages} key={newIndex} index={newIndex} />
     ]);
   };
-console.log(infoBrand);
 
   const handleNext = () => {
     const postData = {
@@ -34,11 +35,12 @@ console.log(infoBrand);
       compositions,
       occasion,
       images,
-      infoBrand,
+      infoBrand
     };
     console.log(postData);
-    // Vous pouvez envoyer postData à un serveur ou à une autre fonction selon vos besoins
+    // Send postData to the server or perform necessary actions
   };
+
   useEffect(() => {
     if (brands && brands.length > 0) {
       setInfoBrand(brands);
@@ -46,9 +48,8 @@ console.log(infoBrand);
   }, [brands]);
 
   return (
-    <View style={styles.view1}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        {/* Conteneur des images */}
+    <View style={styles.container}>
+        {/* Image Section */}
         <View style={styles.imagesContainer}>
           {addImageComponents}
           <TouchableOpacity style={styles.addButton} onPress={handleAddImage}>
@@ -56,19 +57,20 @@ console.log(infoBrand);
           </TouchableOpacity>
         </View>
 
-        {/* Conteneur des bandes */}
+        {/* Brand Section */}
         <View style={styles.brandsContainer}>
-          { infoBrand.map((brand, index) => (
+          {infoBrand.map((brand, index) => (
             <View key={index} style={styles.brandCard}>
               <Text style={styles.brandText}>{brand.name} -</Text>
               <Text style={styles.brandText}>{brand.price} $</Text>
             </View>
           ))}
         </View>
-
-        <View style={styles.view3}>
-          <InputsAsk 
-            description={description} 
+              <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Inputs Section */}
+        <View style={styles.inputsContainer}>
+          <InputsAsk
+            description={description}
             setDescription={setDescription}
             compositions={compositions}
             setCompositions={setCompositions}
@@ -76,76 +78,88 @@ console.log(infoBrand);
             setOccasion={setOccasion}
           />
         </View>
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>Post</Text>
-      </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handleNext}>
+          <Text style={styles.buttonText}>Post</Text>
+        </TouchableOpacity>
       </ScrollView>
 
+      {/* Footer */}
       <View style={styles.footerContainer}>
         <Footer idUser={idUser} />
       </View>
-      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  view1: {
+  container: {
     flex: 1,
-    padding: "5%",
-    backgroundColor: "#fff",
+    backgroundColor: '#fff'
   },
-  scrollView: {
+  scrollViewContent: {
     flexGrow: 1,
+    paddingHorizontal: 16,
+    paddingBottom: 20 // Ensure enough space for scrolling
   },
   imagesContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    height: "40%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    flexWrap: 'wrap', // Ensure wrapping for multiple images
+    height:"30%",
+    marginTop:"10%"
   },
   addButton: {
     marginLeft: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   plusIcon: {
     width: 30,
-    height: 30,
+    height: 30
   },
   brandsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap", // Permet de passer à la ligne si nécessaire
-    marginBottom: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 20
   },
   brandCard: {
-    backgroundColor: "#F08DB7",
+    backgroundColor: '#F08DB7',
     padding: 10,
     margin: 5,
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     minWidth: 100,
-    flexDirection:'row'
+    flexDirection: 'row'
   },
   brandText: {
     fontSize: 14,
-    color: "#FFFFFF",
-    fontWeight:'bold'
+    color: '#FFFFFF',
+    fontWeight: 'bold'
   },
-  view3: {
-    marginTop: 20,
+  inputsContainer: {
+    marginBottom: 20
   },
   button: {
-    backgroundColor: "#F08DB7",
-    alignSelf: "flex-end",
-    width: "25%",
+    backgroundColor: '#F08DB7',
+    alignSelf: 'flex-end',
+    width: '25%',
     height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10
   },
-  footerContainer: {},
-
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  footerContainer: {
+    borderTopWidth: 1,
+    borderTopColor: '#ccc'
+  }
 });
 
 export default AddPost;

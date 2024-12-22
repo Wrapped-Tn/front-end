@@ -45,7 +45,6 @@ const InputsAsk=({ description, setDescription, compositions, setCompositions, o
       };
     return(
         <NativeBaseProvider>
-            <ScrollView>
 
             <View
             style={styles.textArea}>
@@ -75,7 +74,6 @@ const InputsAsk=({ description, setDescription, compositions, setCompositions, o
              selectedValue={occasion}
              onValueChange={itemValue => setOccasion(itemValue)}
               />
-            </ScrollView>
         </NativeBaseProvider>
 
     )
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: '#fff',
         elevation: 2, // Propriété spécifique à Android pour gérer l'ombre
-
+        
       }
 })
 export default InputsAsk;
