@@ -13,6 +13,7 @@ import {
 import { NativeBaseProvider } from 'native-base';
 import { Picker } from '@react-native-picker/picker'; // Ajoutez cette dépendance si nécessaire
 import { useNavigation } from '@react-navigation/native'; // Importer la navigation
+import Icon from 'react-native-vector-icons/FontAwesome5'; // Importer les icônes FontAwesome5
 
 
 const AddBrand = ({ route }) => {
@@ -108,7 +109,7 @@ const AddBrand = ({ route }) => {
                         style={styles.addBrandButton}
                         onPress={openModal}
                     >
-                        <Text style={styles.addBrandText}>+    Add brand tags</Text>
+                    <Text style={styles.addBrandText}>+ Add brand tags</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -153,8 +154,20 @@ const AddBrand = ({ route }) => {
                             onPress={handleImageTouch}
                         >
                             <Image source={image} style={styles.fullScreenImage} />
+                            {selectedRegion && (
+                                <View
+                                    style={[
+                                        styles.regionMarker,
+                                        {
+                                            left: selectedRegion.x - 15, // Centrer l'icône horizontalement
+                                            top: selectedRegion.y - 15, // Centrer l'icône verticalement
+                                        },
+                                    ]}
+                                >
+                                    <Icon name="map-marker" size={20} color="white" />
+                                </View>
+                            )}
                         </TouchableOpacity>
-
                         {/* Formulaire pour les informations de la marque */}
                         {selectedRegion && (
                             <View style={styles.formContainer}>
@@ -227,6 +240,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 30,
     },
+    icon: {
+        color: '#fff',
+        fontSize: 18,
+        marginRight: 8,
+    },
+    regionMarker: {
+        position: 'absolute',
+    }, 
     imageContainer: {
         width: '100%',
         height: '80%',

@@ -6,10 +6,10 @@ import plusIcon from '../../assets/plus.png';
 import Footer from '../../widgets/Footer.jsx';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
-const AddPost = ({ routee }) => {
-  const { brands = [] } = routee?.params || {};
+const AddPost = () => {
   const route = useRoute();
-  const { idUser } = route.params;
+  const { brands = [], idUser } = route.params || {};
+console.log(brands);
 
   const [images, setImages] = useState([]);
   const [addImageComponents, setAddImageComponents] = useState([
@@ -22,12 +22,17 @@ const AddPost = ({ routee }) => {
   const [infoBrand, setInfoBrand] = useState(brands);
 
   const handleAddImage = () => {
+    if (addImageComponents.length >= 3) {
+        alert('Vous ne pouvez ajouter que 3 images maximum.');
+        return;
+    }
+
     const newIndex = addImageComponents.length;
     setAddImageComponents([
-      ...addImageComponents,
-      <AddImage setImages={setImages} key={newIndex} index={newIndex} />
+        ...addImageComponents,
+        <AddImage setImages={setImages} key={newIndex} index={newIndex} />
     ]);
-  };
+};
 
   const handleNext = () => {
     const postData = {
@@ -105,10 +110,9 @@ const styles = StyleSheet.create({
   imagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     flexWrap: 'wrap', // Ensure wrapping for multiple images
     height:"30%",
-    marginTop:"10%"
+    padding:"10%",
   },
   addButton: {
     marginLeft: 10,
