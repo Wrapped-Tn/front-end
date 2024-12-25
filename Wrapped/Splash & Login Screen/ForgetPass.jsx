@@ -5,7 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import BackIcon from '../assets/flecheIcon.png';
 import LogoWarpeed from '../assets/logo2.png'
 import axios from 'axios';
-import PORT from '../Port'
+import {PORT} from '../Port'
 const ForgetPassword = () => {
     const navigation = useNavigation();
     const route = useRoute();

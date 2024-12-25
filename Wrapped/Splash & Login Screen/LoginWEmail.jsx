@@ -9,7 +9,7 @@ import GoogleLogoW from "../assets/googleLogoW.png"
 import FbLogoW from "../assets/fbLogoW.png"
 import LogoWarpeed from '../assets/logo2.png'
 import axios from 'axios';
-import PORT from '../Port';
+import {PORT} from '../Port';
 
 const LoginWEmail = () => {
     const navigation = useNavigation();

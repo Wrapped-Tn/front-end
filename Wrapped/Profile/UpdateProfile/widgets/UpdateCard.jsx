@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ScrollView,Moda
 import CameraIcon from '../../../assets/icon_camera.png';
 import * as ImagePicker from 'expo-image-picker'; // For Expo, replace with your image picker if not using Expo
 import axios from "axios";
-import PORT from '../../../Port';
+import {PORT ,PORT_URL} from '../../../Port';
 
-const UpdateCard = ({ fullname, grade, idUser,idAuth, PDP }) => {
+const UpdateCard = ({ fullname, grade,userdata, idUser,idAuth, PDP }) => {
   const [profileImage, setProfileImage] = useState(PDP);
   const [imageUpdated, setImageUpdated] = useState(false); 
   const [showConfirmation, setShowConfirmation] = useState(false); // Show confirmation modal
@@ -120,13 +120,13 @@ const confirmUpdate = async () => {
   };
 
 
-
+// `${PORT_URL}/uploads/profil/${userdata.role}/${userdata.user_id}/${userdata.profile_picture_url}`
   return (
     <View style={styles.card}>
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{ uri: PDP }} // Updated image source
+          source={{ uri: `${PORT_URL}/uploads/profil/${userdata.role}/${userdata.user_id}/${userdata.profile_picture_url}` }} // Updated image source
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>

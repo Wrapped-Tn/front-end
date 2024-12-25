@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import iconSettings from '../../../assets/settings.png';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import axios from 'axios'
-import Port from '../../../Port'
+import { PORT_URL ,PORT} from '../../../Port'
 
 const ProfileCard = ({idUser,idAuth}) => {
   const navigation = useNavigation();
@@ -20,8 +20,8 @@ const ProfileCard = ({idUser,idAuth}) => {
  
  const GetUserCart =async(iduser,idauth)=>{
   try{
-    const response= await axios.post(Port+'/users/UserCart',{idUser:iduser,idAuth:idauth});
-    console.log(response.data);
+    const response= await axios.post(PORT+'/users/UserCart',{idUser:iduser,idAuth:idauth});
+    console.log('****************usercart*******************',response.data);
     if(response.status==200){
       setUserCard(response.data)
       GetGradeCart(response.data.grade)
@@ -37,7 +37,7 @@ const ProfileCard = ({idUser,idAuth}) => {
 
  const GetGradeCart =async(id)=>{
   try{
-      const response= await axios.get(Port+'/grades/gradename/'+id);
+      const response= await axios.get(PORT+'/grades/gradename/'+id);
       if(response.status==200){
         setGradeCard(response.data)
         console.log(response.data);
@@ -72,7 +72,7 @@ const ProfileCard = ({idUser,idAuth}) => {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{uri:userCard.profile_picture_url?userCard.profile_picture_url:userImg}} // Replace with the actual image URL
+          source={{uri:userCard.profile_picture_url?`${PORT_URL}/uploads/profil/${userCard.role}/${userCard.user_id}/${userCard.profile_picture_url}`:userImg}} // Replace with the actual image URL
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>
@@ -118,7 +118,7 @@ const ProfileCard = ({idUser,idAuth}) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}
         onPress={()=>{
-          navigation.navigate("UpdatePage",{name:userCard.full_name,grade:gradeCard.titre,idUser,idAuth,PDP:userCard.profile_picture_url?userCard.profile_picture_url:userImg} );
+          navigation.navigate("UpdatePage",{name:userCard.full_name,grade:gradeCard.titre,idUser,userCards:userCard,idAuth,PDP:userCard.profile_picture_url?userCard.profile_picture_url:userImg} );
         }}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>

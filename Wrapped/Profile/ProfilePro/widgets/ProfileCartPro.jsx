@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import iconSettings from '../../../assets/settings.png';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import axios from 'axios'
-import Port from '../../../Port'
+import {Port} from '../../../Port'
 
 const ProfileCard = ({idUser,idAuth}) => {
   const navigation = useNavigation();
