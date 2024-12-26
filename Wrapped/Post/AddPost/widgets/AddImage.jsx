@@ -72,15 +72,29 @@ const AddImage = ({ setImages, index }) => {  // Ajout de props `setImages` et `
         }
         onClose();
     };
-
+ // Fonction pour supprimer l'image
+ const removeImage = () => {
+    setSelectedImage(null);  // Supprimer l'image de l'état local
+    setImages(prevImages => {
+        const updatedImages = [...prevImages];
+        updatedImages[index] = null;  // Retirer l'image à l'index donné
+        return updatedImages;
+    });
+};
     return (
         <NativeBaseProvider>
             <View>
                 <TouchableOpacity style={styles.Addimage} onPress={onOpen}>
+                {selectedImage && (
+                        <TouchableOpacity style={styles.deleteButton} onPress={removeImage}>
+                            <Text style={styles.deleteText}>X</Text>
+                        </TouchableOpacity>
+                    )}
                     <Image
                         source={selectedImage ? { uri: selectedImage.uri } : iconAddImg}
                         style={selectedImage ? styles.image : styles.image2}
                     />
+                    
                 </TouchableOpacity>
                 <Actionsheet isOpen={isOpen} onClose={onClose}>
                     <Actionsheet.Content>
@@ -123,6 +137,21 @@ const styles = StyleSheet.create({
         height: 24,
         marginRight: 15,
         marginLeft: 10,
+    },
+    deleteButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        backgroundColor: '#FEFEFE93',
+        borderRadius: 15,
+        padding: 5,
+        zIndex: 1,
+    },
+    deleteText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#FF1616B5',
     },
 
 });

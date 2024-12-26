@@ -20,44 +20,51 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
     );
   };
   const Example = ({ text, selectedValue, onValueChange, items }) => {
-  return (
-    <Center style={styles.boxContainer2}>
-      <Text style={{ fontSize: 16, fontWeight: "bold" }}>{text}</Text>
-      <Box style={styles.boxContainer}>
-        <Image
-          source={iconAddImg}
-          style={{ height: 24, width: 24, marginTop: 10 }}
-        />
-        <Select
-          selectedValue={selectedValue}
-          minWidth="330"
-          accessibilityLabel=""
-          placeholder=""
-          _selectedItem={{
-            bg: "pink.200", // Couleur de fond de l'élément sélectionné
-            endIcon: <CheckIcon size="5" />,
-            borderRadius: 5, // Ajouter des bordures arrondies aux éléments sélectionnés
-          }}
-          _input={{
-            borderWidth: 0, // Supprime la bordure par défaut
-          }}
-          _light={{
-            borderWidth: 0, // Supprime la bordure par défaut
-          }}
-          style={styles.select}
-          onValueChange={onValueChange}
-        >
-          {items.map((item, index) => (
-            <Select.Item key={index} label={<Text>{item.label}</Text>} value={item.value}>
-              {/* Affichage de l'emoji à côté du texte */}
-              <Image source={{ uri: item.url }} alt={item.label} style={{ height: 20, width: 20, marginRight: 10 }} />
-            </Select.Item>
-          ))}
-        </Select>
-      </Box>
-    </Center>
-  );
-};
+    return (
+      <Center style={styles.boxContainer}>
+        <Text style={styles.headerText}>{text}</Text>
+        <Box style={styles.inputContainer}>
+          <Image
+            source={iconAddImg}
+            style={styles.iconImage}
+          />
+          <Select
+            selectedValue={selectedValue}
+            minWidth="300"
+            placeholder="Select an option"
+            _selectedItem={{
+              bg: "blue.100",
+              borderRadius: 5,
+              endIcon: <CheckIcon size="5" color="blue.500" />,
+            }}
+            style={styles.selectInput}
+            onValueChange={onValueChange}
+          >
+            {items.map((item, index) => (
+              <Select.Item
+                key={index}
+                label={item.label}
+                value={item.value}
+                startIcon={
+                  <Image
+                    source={{ uri: item.url }}
+                    style={styles.itemIcon}
+                  />
+                }
+              />
+            ))}
+          </Select>
+        </Box>
+        <View style={styles.selectedContainer}>
+          <Text style={styles.selectedText}>
+            {selectedValue.length > 0
+              ? `Selected: ${selectedValue.join(", ")}`
+              : "No options selected"}
+          </Text>
+        </View>
+      </Center>
+    );
+  };
 
   // Liste des compositions et occasions avec leurs options respectives
   const compositionsList = [
@@ -99,16 +106,18 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
 
   return (
     <NativeBaseProvider>
-      <View style={styles.textArea}>
-        <View style={{ flexDirection: "row" }}>
+          <View style={styles.textAreaContainer}>
+        <View style={styles.textAreaHeader}>
           <Image
             source={pencilicon}
-            style={{ height: 24, width: 24 }}
+            style={styles.headerIcon}
           />
           <Text style={styles.label}>Describe your fit (optional)</Text>
         </View>
         <TextInput
+          style={styles.textAreaInput}
           placeholder="Describe your fit..."
+          placeholderTextColor="#A0AEC0"
           multiline={true}
           numberOfLines={4}
           maxLength={280}
@@ -117,20 +126,31 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
         />
       </View>
 
-      <Example
-        text={"What are the compositions of your outfit?"}
-        selectedValue={compositions}
-        onValueChange={itemValue => setCompositions(itemValue)}
-        items={compositionsList}
-      />
+        <Example
+          text={"What are the compositions of your outfit?"}
+          selectedValue={selectedCompositions}
+          onValueChange={itemValue =>
+            setSelectedCompositions(prev =>
+              prev.includes(itemValue)
+                ? prev.filter(value => value !== itemValue)
+                : [...prev, itemValue]
+            )
+          }
+          items={compositionsList}
+        />
 
-      <Example
-        text={"For what occasion is your outfit?"}
-        selectedValue={occasion}
-        onValueChange={itemValue => setOccasion(itemValue)}
-        items={occasionsList}
-      />
-
+        <Example
+          text={"For what occasion is your outfit?"}
+          selectedValue={selectedOccasions}
+          onValueChange={itemValue =>
+            setSelectedOccasions(prev =>
+              prev.includes(itemValue)
+                ? prev.filter(value => value !== itemValue)
+                : [...prev, itemValue]
+            )
+          }
+          items={occasionsList}
+        />
     </NativeBaseProvider>
   );
 };
@@ -138,17 +158,15 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
 const styles = StyleSheet.create({
   boxContainer: {
     maxWidth: 400,
-    borderColor: '#C8C8C86D',
-    borderWidth: 0,
-    borderRadius: 8,
-    padding: 5,
-    backgroundColor: '#fff',
-    marginBottom: '10%',
-    flexDirection: 'row',
+    padding: 15,
+    marginVertical: 20,
+    borderRadius: 12,
+    backgroundColor: '#F9FAFC',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
   },
   boxContainer2: {
     maxWidth: 400,
@@ -170,6 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 12,
     borderRadius: 5,
+    borderWidth: 1,
     borderColor: '#F08DB7',
   },
   label: {
@@ -177,19 +196,91 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     marginBottom: 5,
-    marginLeft: 10
+    marginLeft: 10,
   },
-  textArea: {
+  textAreaContainer: {
+    marginVertical: 20,
+    padding: 15,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  textAreaHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  headerIcon: {
+    height: 24,
+    width: 24,
+    marginRight: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2D3748',
+  },
+  textAreaInput: {
     height: 100,
-    borderColor: '#C8C8C86D',
-    borderWidth: 2,
+    textAlignVertical: 'top', // Assure un alignement correct du texte
+    fontSize: 14,
+    color: '#2D3748',
+    backgroundColor: '#F9FAFC',
     borderRadius: 8,
     padding: 10,
-    textAlignVertical: 'top',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    elevation: 2,
-  }
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2D3748',
+    marginBottom: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderColor: '#E2E8F0',
+    borderWidth: 1,
+  },
+  iconImage: {
+    height: 24,
+    width: 24,
+    marginRight: 10,
+  },
+  selectInput: {
+    fontSize: 16,
+    color: '#2C5282',
+    flex: 1,
+  },
+  itemIcon: {
+    height: 20,
+    width: 20,
+    marginRight: 8,
+    borderRadius: 3,
+  },
+  selectedContainer: {
+    marginTop: 15,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#EDF2F7',
+  },
+  selectedText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#4A5568',
+  },
 });
 
 export default InputsAsk;

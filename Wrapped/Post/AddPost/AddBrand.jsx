@@ -28,7 +28,7 @@ const AddBrand = ({ route }) => {
     const [brands, setBrands] = useState([]); // Liste des marques ajoutées
     const [editingIndex, setEditingIndex] = useState(null); // Marque en cours de modification
 
-    const categories = ['T-shirt', 'Pull', 'Robe', 'Jeans', 'Veste'];
+    const categories = ['S', 'M', 'L', 'XL', 'XXL']; 
 
     // Fonction pour ouvrir le modal
     const openModal = () => {
@@ -73,7 +73,7 @@ const AddBrand = ({ route }) => {
     const handleImageTouch = (event) => {
         const { locationX, locationY } = event.nativeEvent;
         setSelectedRegion({ x: locationX, y: locationY });
-        Alert.alert('Region Selected', `X: ${locationX}, Y: ${locationY}`);
+        // Alert.alert('Region Selected', `X: ${locationX}, Y: ${locationY}`);
     };
 
     // Supprime une marque
@@ -143,82 +143,89 @@ const AddBrand = ({ route }) => {
 
                 {/* Modal pour l'image agrandie et le formulaire */}
                 <Modal
-                    visible={isModalVisible}
-                    transparent={true}
-                    animationType="slide"
-                >
-                    <View style={styles.modalContainer}>
-                        {/* Image agrandie */}
-                        <TouchableOpacity
-                            style={styles.fullScreenImageContainer}
-                            onPress={handleImageTouch}
-                        >
-                            <Image source={image} style={styles.fullScreenImage} />
-                            {selectedRegion && (
-                                <View
-                                    style={[
-                                        styles.regionMarker,
-                                        {
-                                            left: selectedRegion.x - 15, // Centrer l'icône horizontalement
-                                            top: selectedRegion.y - 15, // Centrer l'icône verticalement
-                                        },
-                                    ]}
-                                >
-                                    <Icon name="map-marker" size={20} color="white" />
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                        {/* Formulaire pour les informations de la marque */}
-                        {selectedRegion && (
-                            <View style={styles.formContainer}>
-                                <TextInput
-                                    placeholder="Enter brand name"
-                                    value={brandName}
-                                    onChangeText={setBrandName}
-                                    style={styles.input}
-                                />
-                                <TextInput
-                                    placeholder="Enter brand price"
-                                    value={brandPrice}
-                                    onChangeText={setBrandPrice}
-                                    keyboardType="numeric"
-                                    style={styles.input}
-                                />
-                                {/* Sélecteur de catégorie */}
-                            <Picker
-                                selectedValue={selectedCategory}
-                                onValueChange={(itemValue) =>
-                                    setSelectedCategory(itemValue)
-                                }
-                                style={styles.picker}
-                            >
-                                <Picker.Item label="Select category" value="" />
-                                {categories.map((category, index) => (
-                                    <Picker.Item
-                                        key={index}
-                                        label={category}
-                                        value={category}
-                                    />
-                                ))}
-                            </Picker>
-                                <TouchableOpacity
-                                    style={styles.saveButton}
-                                    onPress={saveBrandInfo}
-                                >
-                                    <Text style={styles.saveButtonText}>Save</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
+    visible={isModalVisible}
+    transparent={true}
+    animationType="slide"
+>
+    <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+            {/* En-tête de la modale */}
+            <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>select the product :</Text>
+                <TouchableOpacity onPress={closeModal}>
+                    <Icon name="" size={24} color="#333" />
+                </TouchableOpacity>
+            </View>
 
+            {/* Image agrandie */}
+            <TouchableOpacity
+                style={styles.fullScreenImageContainer}
+                onPress={handleImageTouch}
+            >
+                <Image source={image} style={styles.fullScreenImage} />
+                {selectedRegion && (
+                    <View
+                        style={[
+                            styles.regionMarker,
+                            {
+                                left: selectedRegion.x - 15,
+                                top: selectedRegion.y - 15,
+                            },
+                        ]}
+                    >
+                        <Icon name="map-marker" size={20} color="white" />
+                    </View>
+                )}
+            </TouchableOpacity>
+
+            {/* Formulaire pour les informations */}
+            {selectedRegion && (
+                <View style={styles.formContainer}>
+                    <TextInput
+                        placeholder="Enter brand name"
+                        value={brandName}
+                        onChangeText={setBrandName}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Enter brand price"
+                        value={brandPrice}
+                        onChangeText={setBrandPrice}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <Picker
+                        selectedValue={selectedCategory}
+                        onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Select size" value="" />
+                        {categories.map((category, index) => (
+                            <Picker.Item key={index} label={category} value={category} />
+                        ))}
+                    </Picker>
+
+                    {/* Boutons */}
+                    <View style={styles.buttonContainer}>
                         <TouchableOpacity
-                            style={styles.closeButton}
+                            style={[styles.button, styles.secondaryButton]}
                             onPress={closeModal}
                         >
-                            <Text style={styles.closeButtonText}>Close</Text>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.button, styles.primaryButton]}
+                            onPress={saveBrandInfo}
+                        >
+                            <Text style={styles.buttonText}>Save</Text>
                         </TouchableOpacity>
                     </View>
-                </Modal>
-        <TouchableOpacity style={styles.button} 
+                </View>
+            )}
+        </View>
+    </View>
+</Modal>
+        <TouchableOpacity style={styles.button2} 
         onPress={()=>{
             console.log(brands);
             navigation.navigate('AddPost', { brands }); // Navigue vers la page de prévisualisation
@@ -313,19 +320,20 @@ const styles = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
     },
-    input: {
-        width: '100%',
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 15,
-        padding: 5,
-    },
+    // input: {
+    //     width: '100%',
+    //     borderBottomWidth: 1,
+    //     borderColor: '#ccc',
+    //     marginBottom: 15,
+    //     padding: 5,
+    // },
     saveButton: {
         backgroundColor: '#AD669E',
         padding: 10,
         borderRadius: 5,
-        width: '100%',
+        width: '40%',
         alignItems: 'center',
+        
     },
     saveButtonText: {
         color: '#fff',
@@ -364,29 +372,102 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     actionButton: {
-        marginLeft: 10,
-        padding: 5,
-        backgroundColor: '#f0f0f0',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        backgroundColor: '#AD669E',
         borderRadius: 5,
     },
     actionText: {
+        color: '#fff',
         fontSize: 14,
-        color: '#007BFF',
+    },
+    button2: {
+        marginTop: 20,
+        backgroundColor: '#AD669E',
+        padding: 15,
+        borderRadius: 5,
+        width: '90%',
+        alignItems: 'center',
+    },
+ 
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: '#ffffff',
+        borderRadius: 15,
+        width: '90%',
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 10,
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    fullScreenImageContainer: {
+        width: '100%',
+        height: 200,
+        marginBottom: 20,
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
+    fullScreenImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    formContainer: {
+        marginTop: 10,
+    },
+    input: {
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 15,
+        borderWidth: 1,
+        borderColor: '#ddd',
+    },
+    picker: {
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
+        marginBottom: 15,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
     },
     button: {
-        backgroundColor: "#F08DB7",
-        alignSelf: "flex-end",
-        width: "25%",
-        height: 40,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 10,
-      },
-      picker: {
-        width: '100%',
-        marginBottom: 15,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
+        flex: 1,
+        paddingVertical: 12,
+        borderRadius: 8,
+        marginHorizontal: 5,
+    },
+    primaryButton: {
+        backgroundColor: '#AD669E',
+    },
+    secondaryButton: {
+        backgroundColor: '#E0E0E0',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        textAlign: 'center',
+        fontWeight: '600',
     },
 });
 

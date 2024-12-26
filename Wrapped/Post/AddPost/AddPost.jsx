@@ -54,6 +54,8 @@ console.log(brands);
 
   return (
     <View style={styles.container}>
+           <ScrollView contentContainerStyle={styles.scrollViewContent}>
+
         {/* Image Section */}
         <View style={styles.imagesContainer}>
           {addImageComponents}
@@ -66,12 +68,12 @@ console.log(brands);
         <View style={styles.brandsContainer}>
           {infoBrand.map((brand, index) => (
             <View key={index} style={styles.brandCard}>
-              <Text style={styles.brandText}>{brand.name} -</Text>
+              <Text style={styles.brandText}>{brand.name} - </Text>
+              <Text style={styles.brandText}>{brand.category} - </Text>
               <Text style={styles.brandText}>{brand.price} $</Text>
             </View>
           ))}
         </View>
-              <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Inputs Section */}
         <View style={styles.inputsContainer}>
           <InputsAsk
@@ -105,14 +107,14 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     paddingHorizontal: 16,
-    paddingBottom: 20 // Ensure enough space for scrolling
+    paddingBottom:"70%", // Ensure enough space for scrolling
   },
   imagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap', // Ensure wrapping for multiple images
     height:"30%",
-    padding:"10%",
+    padding:"5%",
   },
   addButton: {
     marginLeft: 10,

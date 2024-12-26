@@ -10,7 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
-import {Port} from '../Port'
+import {PORT} from '../Port'
 import { err } from 'react-native-svg';
 import * as FileSystem from 'expo-file-system';
 
@@ -44,7 +44,7 @@ const AcountDet = () => {
     
 const IntitalGrade=async()=>{
     try{
-        const response= await axios.put(Port+'/grades/')
+        const response= await axios.put(PORT+'/grades/')
         if(response.status==201){
             setIdGrade(response.data.id)
         }
@@ -83,7 +83,7 @@ const validateFullName = (fullname) => {
 //       const file = `data:image/jpeg;base64,${base64File}`;
   
 //       // Envoyer au backend
-//       const response = await axios.post(`${Port}/uploads`, { file }, {
+//       const response = await axios.post(`${PORT}/uploads`, { file }, {
 //         headers: {
 //           'Content-Type': 'application/json',
 //         },
@@ -126,7 +126,7 @@ const uploadImage = async (userId) => {
 
   
       // Send to backend
-      const response = await axios.post(`${Port}/upload`, formData, {
+      const response = await axios.post(`${PORT}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -222,7 +222,7 @@ const addUser = async (userData, setShowSpiner, navigation, genre) => {
         // IntitalGrade()
         // if(idgrade){
 
-            const response = await axios.post(`${Port}/users/`, userData);
+            const response = await axios.post(`${PORT}/users/`, userData);
             if (response.status === 200) {
                 const img = await uploadImage(response?.data?.userId);
                 if(!img){
