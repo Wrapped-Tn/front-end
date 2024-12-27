@@ -1,18 +1,16 @@
 import React from "react";
 import { ScrollView, Image, Text, StyleSheet, TouchableOpacity, View } from "react-native";
-import PostDetails from "../Post/postDetails/PostDetails";
 
-const PostsGrid = ({ idUser ,articles, searchQuery, navigation }) => {
-  const [showCount, setShowCount] = React.useState(6); // Initially show 4 items
-  const [show, setShow] = React.useState(false);
+const PostsGrid = ({ idUser, articles, searchQuery, navigation }) => {
+  const [showCount, setShowCount] = React.useState(6); // Initially show 6 items
 
   // Filter and limit the number of articles based on search query and showCount
-  const filteredArticles = articles.filter(
+  const filteredArticles = (articles || []).filter(
     (article) =>
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.category.toLowerCase().includes(searchQuery.toLowerCase())||
-      article.brand.toLowerCase().includes(searchQuery.toLowerCase())||
-      article.color.toLowerCase().includes(searchQuery.toLowerCase())
+      article.title.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+      article.category.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+      article.brand.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+      article.color.toLowerCase().includes(searchQuery.toLowerCase().trim())
   );
 
   // Show more items when "See More" is pressed
@@ -27,11 +25,21 @@ const PostsGrid = ({ idUser ,articles, searchQuery, navigation }) => {
           key={article.id}
           style={styles.gridItem}
           onPress={() => {
-            navigation.navigate("PostDetails", { idUser:idUser,article: article ,articles:articles});
-            return show && <PostDetails id={article.id} />;
+            navigation.navigate("PostDetails", {
+              idUser, 
+              articleId: article.id, 
+              article, // Passing full article to details page
+            });
           }}
         >
-          <Image source={{ uri: article.images[0].image_url }} style={styles.image} />
+          <Image
+            source={{ uri: article?.images[0]?.image_url || 'https://via.placeholder.com/150' }} // Fallback image if none
+            style={styles.image}
+          />
+          {/* <Text style={styles.title}>{article.title}</Text> */}
+          {/* Additional info about the article */}
+          {/* <Text style={styles.category}>{article.category}</Text>
+          <Text style={styles.price}>${article.price.toFixed(2)}</Text> */}
         </TouchableOpacity>
       ))}
       {filteredArticles.length > showCount && (
@@ -58,17 +66,31 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#fff", // Ensure the grid items have a background
     elevation: 5, // Shadow for Android devices
+    padding: 10, // Padding inside each grid item for spacing
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: 150,
     borderRadius: 8,
+    resizeMode: "cover",
   },
-  suggestText: {
-    fontSize: 18,
+  title: {
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333", // Dark text
+    marginTop: 8,
+    textAlign: "center",
+  },
+  category: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+    textAlign: "center",
+  },
+  price: {
+    fontSize: 16,
+    color: "#28a745", // Green for price
+    marginTop: 4,
+    textAlign: "center",
   },
   seeMoreButton: {
     marginTop: 10,

@@ -30,46 +30,70 @@ import PostsGrid from "../WhatsHot/YouMayAlsoLike";
 
 
 
-const PostDetails = ({ navigation }) => {
-  const route = useRoute();
-  const { article, articles,idUser } = route.params;
-  const [showTags, setShowTags] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const PostDetails = ({ navigation, route }) => {
+  const { article, articles, idUser } = route.params;
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); 
-  const [addToCartModalVisible, setAddToCartModalVisible] = useState(false); 
-  const [selectedSize, setSelectedSize] = useState(""); 
-  const [selectedColor, setSelectedColor] = useState(""); 
-  const [details, setDetails] = useState([]); 
-  const [visibleItems, setVisibleItems] = useState(4);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addToCartModalVisible, setAddToCartModalVisible] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [showTags, setShowTags] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const commentsRef = useRef();
   const commentInputRef = useRef();
-  const Port2 = 'http://192.168.31.82:3000';//update this port
+  const Port2 = 'http://192.168.31.82:3000'; // update this port
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch(`${Port2}/comments/${article.id}`); 
-        if (!response.ok) {
-          throw new Error('Failed to fetch comments');
-        }
-  
-        const comments = await response.json();
-        const sortedComments = comments.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); // Sort by date (oldest to newest)
-        setComments(sortedComments);
+        const response = await fetch(`${Port2}/comments/${article.id}`);
+        const commentsData = await response.json();
+        setComments(commentsData);
       } catch (error) {
         console.error('Error fetching comments:', error);
       }
     };
-  
+
     if (article?.id) {
       fetchComments();
     }
   }, [article?.id]);
+
+  const handleLikePress = () => setLiked(!liked);
+  const handleSavePress = () => setSaved(!saved);
+
+  const addComment = async () => {
+    if (newComment.trim()) {
+      try {
+        const response = await fetch(`${Port2}/comments/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            users_id: idUser,
+            articles_id: article.id,
+            content: newComment,
+          }),
+        });
+        const result = await response.json();
+        if (response.ok) {
+          setComments(prev => [...prev, result.comment]);
+          setNewComment('');
+        } else {
+          alert('Failed to add comment: ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        alert('An error occurred: ' + error.message);
+      }
+    } else {
+      alert('Comment content cannot be empty.');
+    }
+  };
 
   const handleLongPress = (commentId) => {
     Alert.alert(
@@ -78,375 +102,146 @@ const PostDetails = ({ navigation }) => {
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Delete', style: 'destructive', onPress: () => deleteComment(commentId) },
-      ],
-      { cancelable: true }
+      ]
     );
   };
 
   const deleteComment = async (commentId) => {
     try {
-      // Optimistic UI update: Remove comment from the list immediately
-      setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
-  
-      // Delete request to the API
-      const response = await axios.delete(Port2 + `/comments/` + commentId, {
-        headers: { 'Content-Type': 'application/json' }, // Optional headers
-        timeout: 10000, // Optional timeout (10 seconds)
-      });
-  
+      setComments(prev => prev.filter(comment => comment.id !== commentId));
+      const response = await axios.delete(`${Port2}/comments/${commentId}`);
       if (response.status === 200) {
         alert('Comment deleted successfully');
-      } else {
-        alert('Comment not found');
       }
     } catch (error) {
       console.error('Error deleting comment:', error);
-  
-      // If the deletion failed, revert the optimistic update
-      setComments(prevComments => [...prevComments]); // Revert to previous state
-  
-      alert('Failed to delete the comment. Please try again later.');
+      alert('Failed to delete comment');
     }
   };
-  
-
-  const handleImagePress = () => setShowTags(!showTags);
-
-  const handleSwipe = ({ nativeEvent }) => {
-    if (article.images.length === 0) return; // Prevent swipe if no images
-
-    if (nativeEvent.translationX < -50) {
-      setCurrentImageIndex((prev) => (prev + 1) % article.images.length); 
-      console.log('====================================');
-      console.log("Swipe left");
-      console.log('====================================');
-    } else if (nativeEvent.translationX > 50) {
-      setCurrentImageIndex((prev) => (prev - 1 + article.images.length) % article.images.length);
-      console.log('====================================');
-      console.log("Swipe right");
-      console.log('====================================');
-    }
-  };
-  const handleLikePress = () => setLiked(!liked);
-  const handleSavePress = () => setSaved(!saved);
-
-  const scrollToComments = () => {
-    commentsRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
-    setTimeout(() => commentInputRef.current?.focus(), 300); // Delay to ensure the input gets focus
-  };
-
-  const addComment = async () => {
-    if (newComment.trim()) {
-      try {
-        const response = await fetch(Port2 + '/comments/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            users_id: idUser, // Replace with the actual user ID
-            articles_id: article.id, // Replace with the actual article ID
-            content: newComment,
-          }),
-        });
-  
-        const result = await response.json();
-  
-        if (response.ok) {
-          const { comment } = result;
-          console.log('====================================');
-          console.log("result",result);
-          console.log('====================================');
-          setComments((prevComments) => [
-            ...prevComments,
-            result.comment
-          ]);
-  
-          setNewComment('');
-        } else {
-          console.error('Error adding comment:', result.error);
-          alert('Failed to add comment: ' + result.error);
-        }
-      } catch (error) {
-        console.error('Error adding comment:', error);
-        if (error.message.includes('NetworkError')) {
-          alert('Network issue: Please check your internet connection.');
-        } else {
-          alert('An unexpected error occurred: ' + error.message);
-        }
-      }
-    } else {
-      alert('Comment content cannot be empty.');
-    }
-  };
-  
-  // Handle Add to Cart action
-
-  const handleAddToCart = () => {
-    setAddToCartModalVisible(true);
-    setModalVisible(false);
-  };
-  
-  const handleFinalAddToCart = () => {
-    setModalVisible(false); 
-    setAddToCartModalVisible(false);
-    Alert.alert(
-      'Item added to cart',
-      "",
-      [
-        { text: 'See More Items', style: 'destructive',onPress: () => scrollToComments()  },
-        { text: 'See Cart', style: 'destructive', onPress: () => navigation.navigate("myBag",{articles:articles}) },
-      ],
-      { cancelable: true }
-    );
-  };
-  const handleSeeCart = () => {
-    setModalVisible(false); 
-  };
-  
-  // Handle "See More" button press (redirect to item details page)
-  const handleSeeMore = () => {
-    commentsRef.current?.scrollToEnd({ animated: true }); // Scroll to the bottom
-    setTimeout(() => commentInputRef.current?.focus(), 300)
-  };
-
-  if (!details) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Post details not available.</Text>
-      </View>
-    );
-  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-      >
-        <ScrollView ref={commentsRef}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="arrow-back" size={24} color="#007BFF" />
-              <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
-          </View>
+      <ScrollView ref={commentsRef}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#007BFF" />
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.postContainer}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-      {article.images.length > 0 ? (
-        <PanGestureHandler onGestureEvent={handleSwipe}>
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <TouchableOpacity onPress={handleImagePress}>
-              <Image
-                source={{ uri: article.images[currentImageIndex]?.image_url || '' }}
-                style={{ width: 300, height: 300, resizeMode: 'cover' }}
-              />
-            </TouchableOpacity>
-          </View>
-        </PanGestureHandler>
-      ) : (
-        <Text>No images available</Text> // Display a message when no images are available
-      )}
-    </GestureHandlerRootView>
-
-            {showTags && (
-              <View style={styles.tagContainer}>
-                {["Prada - $250", "Gucci - $180", "Kenzo - $300"].map(
-                  (tag, idx) => (
-                    <TouchableOpacity key={idx} style={styles.tag}>
-                      <Text style={styles.tagText}>{tag}</Text>
-                    </TouchableOpacity>
-                  )
-                )}
-              </View>
-            )}
-
-            <View style={styles.iconBar}>
-              <TouchableOpacity style={styles.iconButton} onPress={handleLikePress}>
-                <FontAwesome
-                  name={liked ? "star" : "star-o"}
-                  size={24}
-                  color={liked ? "#FFED2B" : "black"}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.iconButton} onPress={scrollToComments}>
-                <Ionicons name="chatbubble-outline" size={24} color="black" />
-              </TouchableOpacity>
-
-              <View style={styles.imageIndicator}>
-                {article.images.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      currentImageIndex === index
-                        ? styles.activeDot
-                        : styles.inactiveDot,
-                    ]}
+        <View style={styles.postContainer}>
+          {article.images.length > 0 && (
+            <PanGestureHandler>
+              <View style={styles.imageContainer}>
+                <TouchableOpacity onPress={() => setShowTags(!showTags)}>
+                  <Image
+                    source={{ uri: article.images[currentImageIndex].image_url }}
+                    style={styles.image}
                   />
-                ))}
+                </TouchableOpacity>
               </View>
+            </PanGestureHandler>
+          )}
 
-              <TouchableOpacity
-                style={styles.iconButton}
-                onPress={() => setModalVisible(true)} // Show modal when cart button is pressed
-              >
-                <Feather name="shopping-cart" size={24} color="black" />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.iconButton} onPress={handleSavePress}>
-                <MaterialIcons
-                  name={saved ? "bookmark" : "bookmark-border"}
-                  size={24}
-                  color="black"
-                />
-              </TouchableOpacity>
+          {showTags && (
+            <View style={styles.tagContainer}>
+              {["Prada - $250", "Gucci - $180", "Kenzo - $300"].map((tag, idx) => (
+                <TouchableOpacity key={idx} style={styles.tag}>
+                  <Text style={styles.tagText}>{tag}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
-          </View>
+          )}
 
-          <View style={styles.postDetails}>
-            <View style={styles.userInfo}>
-              <Image
-                source={{ uri: article.User.profile_picture_url }}
-                style={styles.profileImage}
-              />
-              <Text style={styles.userName}>{article.User.full_name}</Text>
-            </View>
-            <Text style={styles.postText}>{article.title}</Text>
+          <View style={styles.iconBar}>
+            <TouchableOpacity style={styles.iconButton} onPress={handleLikePress}>
+              <FontAwesome name={liked ? "star" : "star-o"} size={24} color={liked ? "#FFED2B" : "black"} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={() => commentsRef.current?.scrollToEnd({ animated: true })}>
+              <Ionicons name="chatbubble-outline" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={() => setModalVisible(true)}>
+              <Feather name="shopping-cart" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={handleSavePress}>
+              <MaterialIcons name={saved ? "bookmark" : "bookmark-border"} size={24} color="black" />
+            </TouchableOpacity>
           </View>
+        </View>
 
-          <View style={styles.commentsContainer}>
+        <View style={styles.postDetails}>
+          <Text style={styles.postText}>{article.title}</Text>
+        </View>
+
+        <View style={styles.commentsContainer}>
           {comments.map((comment, idx) => (
-  <TouchableOpacity 
-    key={idx} 
-    style={styles.comment}
-    onLongPress={() => handleLongPress(comment.id)} 
-    delayLongPress={150} 
-  >
-    <Image
-      source={{ uri: comment.User?.profile_picture_url || "" }}
-      style={styles.commentProfileImage}
-    />
-    <View style={styles.commentDetails}>
-      <Text style={styles.commentUser}>{comment.User?.full_name || "Me"}</Text>
-      <Text style={styles.commentText}>{comment.content}</Text>
-    </View>
-  </TouchableOpacity>
-))}
+            <TouchableOpacity key={idx} onLongPress={() => handleLongPress(comment.id)} style={styles.comment}>
+              <Text>{comment.content}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
+        <View style={styles.newCommentContainer}>
+          <TextInput
+            ref={commentInputRef}
+            style={styles.input}
+            placeholder="Add a comment..."
+            value={newComment}
+            onChangeText={setNewComment}
+            onSubmitEditing={addComment}
+          />
+        </View>
+      </ScrollView>
 
-            <View style={styles.commentInputContainer}>
-              <TextInput
-                ref={commentInputRef}
-                placeholder="Comment..."
-                value={newComment}
-                onChangeText={setNewComment}
-                style={styles.commentInput}
-              />
-              <TouchableOpacity style={styles.commentButton} onPress={addComment}>
-                <Ionicons name="send" size={24} color="#007BFF" />
-              </TouchableOpacity>
-            </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Select Size</Text>
+            <TouchableOpacity onPress={() => setSelectedSize("Small")}>
+              <Text>Small</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedSize("Medium")}>
+              <Text>Medium</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedSize("Large")}>
+              <Text>Large</Text>
+            </TouchableOpacity>
+
+            <Text>Select Color</Text>
+            <TouchableOpacity onPress={() => setSelectedColor("Red")}>
+              <Text>Red</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedColor("Blue")}>
+              <Text>Blue</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setAddToCartModalVisible(true)}>
+              <Text>Add to Cart</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.sectionTitle}>You May Also Like</Text>
-          <PostsGrid articles={articles} />
-        </ScrollView>
-        <Modal
-  visible={modalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setModalVisible(false)}
->
-  <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-    <View style={styles.modalBackdrop} />
-  </TouchableWithoutFeedback>
-  <View style={styles.modalContainer}>
-    <Text style={styles.modalTitle}>Select Size and Color</Text>
+        </View>
+      </Modal>
 
-    {/* Size selection */}
-    <View style={styles.pickerContainer}>
-      <Text style={styles.pickerLabel}>Size:</Text>
-      <View style={styles.optionRow}>
-        {["S", "M", "L"].map((size) => (
-          <TouchableOpacity
-            key={size}
-            onPress={() => setSelectedSize(size)}
-            style={[
-              styles.pickerOption,
-              selectedSize === size && styles.selectedOption,
-            ]}
-          >
-            <Text style={styles.pickerOptionText}>{size}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-
-    {/* Color selection */}
-    <View style={styles.pickerContainer}>
-      <Text style={styles.pickerLabel2}>Color:</Text>
-      <View style={styles.optionRow}>
-        {["Red", "Blue", "Black"].map((color) => (
-          <TouchableOpacity
-            key={color}
-            onPress={() => setSelectedColor(color)}
-            style={[
-              styles.pickerOption,
-              selectedColor === color && styles.selectedOption,
-            ]}
-          >
-            <Text style={styles.pickerOptionText}>{color}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-
- {/* Add to cart button */}
- <TouchableOpacity
-      style={styles.addToCartButton}
-      onPress={handleAddToCart}
-    >
-      <Text style={styles.addToCartText}>Add to Cart</Text>
-    </TouchableOpacity>
-  </View>
-</Modal>
-
-<Modal
-  visible={addToCartModalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setAddToCartModalVisible(false)}
->
-  <TouchableWithoutFeedback onPress={() => setAddToCartModalVisible(false)}>
-    <View style={styles.modalBackdrop} />
-  </TouchableWithoutFeedback>
-  <View style={styles.modalContainer}>
-    {/* Article Category */}
-    <Text style={styles.modalTitle}>{article.category}</Text>
-
-    {/* Article Brand */}
-    <Text style={styles.modalSubTitle}>{article.brand}</Text>
-
-    {/* Display selected size, color, and price */}
-    <Text style={styles.detailsText}>Size: {selectedSize}</Text>
-    <Text style={styles.detailsText}>Color: {selectedColor}</Text>
-    <Text style={styles.detailsText}>Price: ${article.price}</Text>
-
-    {/* Add to cart button in this modal */}
-    <TouchableOpacity
-      style={styles.addToCartButton}
-      onPress={handleFinalAddToCart}
-    >
-      <Text style={styles.addToCartText}>Add to Cart</Text>
-    </TouchableOpacity>
-  </View>
-</Modal>
-      </KeyboardAvoidingView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={addToCartModalVisible}
+        onRequestClose={() => setAddToCartModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Item added to cart</Text>
+            <TouchableOpacity onPress={() => setAddToCartModalVisible(false)}>
+              <Text>Proceed</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </GestureHandlerRootView>
   );
 };

@@ -21,11 +21,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/Logo.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#FFFFFF00"
+      },
+      "package": "com.aziz_channoufi.Wrapped"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f3266539-68d0-4efe-9a45-43d6c5fbd740"
+      }
     }
   }
 }

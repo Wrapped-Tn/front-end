@@ -29,10 +29,58 @@ const DiscoveryPage = () => {
   );
 
   const allPosts = [
-    { id: '1', category: 'men', color: 'red', brand: 'Brand 1', occasion: 'casual', item: 'shirt', title: 'Red Shirt', price: 50, image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' },
-    { id: '2', category: 'women', color: 'blue', brand: 'Brand 2', occasion: 'formal', item: 'dress', title: 'Blue Dress', price: 100, image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' },
-    { id: '3', category: 'men', color: 'green', brand: 'Brand 1', occasion: 'party', item: 'pants', title: 'Green Pants', price: 70, image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' },
-    { id: '4', category: 'women', color: 'black', brand: 'Brand 3', occasion: 'wedding', item: 'skirt', title: 'Black Skirt', price: 80, image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' },
+    {
+      id: '1',
+      category_outfit: { main: 'men', sub: 'shirts' },
+      color: 'red',
+      brand: { name: 'Brand 1', origin: 'USA' },
+      occasion_outfit: { type: 'casual', season: 'summer' },
+      title: 'Red Shirt',
+      description: 'A stylish red shirt perfect for casual outings.',
+      price: 50.00,
+      size: 'M',
+      available_stock: 15,
+      image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=',
+    },
+    {
+      id: '2',
+      category_outfit: { main: 'women', sub: 'dresses' },
+      color: 'blue',
+      brand: { name: 'Brand 2', origin: 'Italy' },
+      occasion_outfit: { type: 'formal', season: 'spring' },
+      title: 'Blue Dress',
+      description: 'Elegant blue dress suitable for formal events.',
+      price: 100.00,
+      size: 'L',
+      available_stock: 10,
+      image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=',
+    },
+    {
+      id: '3',
+      category_outfit: { main: 'men', sub: 'pants' },
+      color: 'green',
+      brand: { name: 'Brand 1', origin: 'USA' },
+      occasion_outfit: { type: 'party', season: 'winter' },
+      title: 'Green Pants',
+      description: 'Trendy green pants for party wear.',
+      price: 70.00,
+      size: 'XL',
+      available_stock: 20,
+      image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=',
+    },
+    {
+      id: '4',
+      category_outfit: { main: 'women', sub: 'skirts' },
+      color: 'black',
+      brand: { name: 'Brand 3', origin: 'France' },
+      occasion_outfit: { type: 'wedding', season: 'fall' },
+      title: 'Black Skirt',
+      description: 'Sophisticated black skirt ideal for weddings.',
+      price: 80.00,
+      size: 'S',
+      available_stock: 5,
+      image: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=',
+    },
   ];
 
   useEffect(() => {
@@ -83,12 +131,14 @@ const DiscoveryPage = () => {
       {filteredPosts.length === 0 ? (
         <Text style={styles.noResultsText}>No results found for your filters.</Text>
       ) : (
+        <View style={styles.postsContainer}>
         <FlatList
           data={filteredPosts}
           renderItem={({ item }) => <PostItem item={item} />}
           keyExtractor={(item) => item.id}
           numColumns={2}
         />
+    </View>
       )}
     </View>
   );
@@ -98,9 +148,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f4f4f4",
-    padding: 10,
+    padding: 5,
     paddingTop: 60,
   },
+  postsContainer:{
+    marginRight: "auto",
+    }
 });
 
 export default DiscoveryPage;

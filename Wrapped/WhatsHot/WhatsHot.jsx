@@ -1,64 +1,103 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, FlatList } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
 
 import AppBar from "./AppBar";
 import SearchBar from "./SearchBar";
-import SuggestionsList from "./SuggestionsList";
 import PostsGrid from "./PostsGrid";
-import {Port} from "../Port";
 
 const WhatsHotPage = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [articles, setArticles] = useState([]); // Articles for the grid
-  const [loading, setLoading] = useState(true); // Loading indicator state
+  const [loading, setLoading] = useState(false); // Loading indicator state
   const [error, setError] = useState(null); // Error state
   const route = useRoute();
-  const idUser = route?.params?.idUser ?? null; 
-  // Fetch all articles from the backend
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await axios.get(Port+'/articles/');
-        if (response.data && Array.isArray(response.data)) {
-          setArticles(response.data);
-          console.log('====================================');
-          console.log("articles",response.data);
-          console.log('====================================');
-        } else {
-          setArticles(response.data.articles || []); // Handle if data is nested
-        }
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-        setError('Error fetching articles. Please try again later.',error);
-        console.log('====================================');
-        console.log("articles",response.data, "error");
-        console.log('====================================');
-        console.error('Error fetching articles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const idUser = route?.params?.idUser ?? null;
 
-    fetchArticles();
-  }, []);
+  // Static articles data
+  const staticArticles = [
+    {
+      id: '1',
+      category: 'skirts',
+      color: 'black',
+      brand: 'Brand 1',
+      title: 'Black Skirt',
+      description: 'Sophisticated black skirt ideal for weddings.',
+      price: 80.00,
+      size: 'S',
+      available_stock: 5,
+      occasion_outfit: { type: 'wedding', season: 'fall' },
+      images: [{ image_url: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' }],
+    },
+    {
+      id: '2',
+      category: 'jackets',
+      color: 'red',
+      brand: 'Brand 2',
+      title: 'Red Jacket',
+      description: 'Elegant red jacket for casual occasions.',
+      price: 120.00,
+      size: 'M',
+      available_stock: 3,
+      occasion_outfit: { type: 'casual', season: 'spring' },
+      images: [{ image_url: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' }],
+    },
+    {
+      id: '3',
+      category: 'shoes',
+      color: 'white',
+      brand: 'Brand 3',
+      title: 'White Sneakers',
+      description: 'Comfortable white sneakers for daily wear.',
+      price: 65.00,
+      size: 'L',
+      available_stock: 8,
+      occasion_outfit: { type: 'casual', season: 'summer' },
+      images: [{ image_url: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' }],
+    },
+    {
+      id: '4',
+      category: 'skirts',
+      color: 'blue',
+      brand: 'Brand 4',
+      title: 'Blue Skirt',
+      description: 'Chic blue skirt perfect for formal events.',
+      price: 75.00,
+      size: 'M',
+      available_stock: 2,
+      occasion_outfit: { type: 'formal', season: 'fall' },
+      images: [{ image_url: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' }],
+    },
+      {
+        id: '5',
+        category: 't-shirts',
+        color: 'green',
+        brand: 'Brand 5',
+        title: 'Green T-shirt',
+        description: 'Casual green t-shirt with a cool print.',
+        price: 25.00,
+        size: 'L',
+        available_stock: 10,
+        occasion_outfit: { type: 'casual', season: 'summer' },
+        images: [{ image_url: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' }],
+      },
+  ];
 
   // Handle search query
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim() === "") {
-      setSuggestions([]);
+      setSuggestions([]); // If the search is empty, show no suggestions
       return;
     }
-    const filteredSuggestions = articles.filter(
-      (item) =>
-        item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.User.full_name.toLowerCase().includes(query.toLowerCase())
+    const filteredSuggestions = staticArticles.filter((article) =>
+      article.title.toLowerCase().includes(query.toLowerCase()) ||
+      article.category.toLowerCase().includes(query.toLowerCase()) ||
+      article.brand.toLowerCase().includes(query.toLowerCase()) ||
+      article.color.toLowerCase().includes(query.toLowerCase())
     );
-    setSuggestions(filteredSuggestions);
+    setSuggestions(filteredSuggestions); // Update suggestions based on the query
   };
 
   return (
@@ -66,21 +105,15 @@ const WhatsHotPage = () => {
       <AppBar />
       <View style={styles.content}>
         <SearchBar searchQuery={searchQuery} handleSearch={handleSearch} />
-        {error && (
-          <Text style={styles.errorMessage}>{error}</Text>
-        )}
+        {error && <Text style={styles.errorMessage}>{error}</Text>}
         {loading ? (
-          <ActivityIndicator size="large" color="#ff6600" style={styles.loading} />
+          <ActivityIndicator size="large" color="#FFB6C8" style={styles.loading} />
         ) : (
           <>
-            <SuggestionsList
-              suggestions={suggestions}
-              setSearchQuery={setSearchQuery}
-              setSuggestions={setSuggestions}
-            />
+            {/* If there are search suggestions, display them; otherwise, show all articles */}
             <PostsGrid
               idUser={idUser}
-              articles={articles}
+              articles={suggestions.length > 0 ? suggestions : staticArticles} // Display suggestions or all articles
               searchQuery={searchQuery}
               navigation={navigation}
             />

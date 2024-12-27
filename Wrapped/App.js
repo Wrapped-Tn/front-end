@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,LogBox  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Splash from './Splash & Login Screen/splash'; // Vérifiez bien le chemin
@@ -23,10 +23,11 @@ import DescoveryPage from './Discovery/Discovery';
 import MyBag from './myBag/MyBag';
 import WhatsHotPage from './WhatsHot/WhatsHot';
 import LayoutWrapper from './widgets/Layout_wrapper';
-
+import ArticleDetails from './Post/PostDetail/ArticleDetails';
 export default function App() {
   const Stack = createNativeStackNavigator();
-  
+  LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
+
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
@@ -48,7 +49,7 @@ export default function App() {
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="ProfilePro" options={{ headerShown: false }} component={ProfilePro}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
-        <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={PostDetails}/>
+        <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={ArticleDetails}/>
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
         <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
