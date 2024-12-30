@@ -1,25 +1,19 @@
 {
   "cli": {
-    "version": ">= 10.2.4",
-    "appVersionSource": "remote",
-    "requireCommit": true
-
+    "version": ">= 14.2.0",
+    "appVersionSource": "remote"
   },
   "build": {
-   "preview": {
-      "android": {
-        "buildType": "apk"
-      }
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
     },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
+    "preview": {
+      "distribution": "internal"
     },
-    "preview3": {
-      "developmentClient": true
-    },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
     "production": {}
