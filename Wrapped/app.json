@@ -4,29 +4,29 @@
     "slug": "Wrapped",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Logo.png",
+    "icon": "./assets/logowrapped.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Logo.png",
+      "image": "./assets/logowrapped.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "permissions": [
-      "CAMERA",
-      "MEDIA_LIBRARY"
+
+    "assetBundlePatterns": [
+      "**/*"
     ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Logo.png",
+        "foregroundImage": "./assets/logowrapped.png",
         "backgroundColor": "#FFFFFF00"
       },
       "package": "com.aziz_channoufi.Wrapped"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logowrapped.png"
     },
     "extra": {
       "eas": {
