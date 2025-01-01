@@ -5,15 +5,65 @@ const { width } = Dimensions.get('window');
 
 const SizeSelectorPopup = ({ visible, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedQuantity, setSelectedQuantity] = useState(null);
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL'];
-
+  const colors = ['Black', 'White', 'Red', 'Blue', 'Green'];
+  const Article = ['T-shirt', 'Pants', 'Shoes', 'Hat', 'Jacket'];
   return (
     <Modal transparent={true} visible={visible} animationType="slide">
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
             <View style={styles.popup}>
+              <Text style={styles.title}>Select Article</Text>
+              <View style={styles.sizeContainer}>
+                {Article.map((size) => (
+                  <TouchableOpacity
+                    key={size}
+                    style={[
+                      styles.sizeButton,
+                      selectedArticle === size && styles.selectedSizeButton,
+                    ]}
+                    onPress={() => setSelectedArticle(size)}
+                  >
+                    <Text
+                      style={[
+                        styles.sizeText,
+                        selectedArticle === size && styles.selectedSizeText,
+                      ]}
+                    >
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {/* ////////////////////////////////////////// */}
+              <Text style={styles.title}>Select Color</Text>
+              <View style={styles.sizeContainer}>
+                {colors.map((size) => (
+                  <TouchableOpacity
+                    key={size}
+                    style={[
+                      styles.sizeButton,
+                      selectedColor === size && styles.selectedSizeButton,
+                    ]}
+                    onPress={() => setSelectedColor(size)}
+                  >
+                    <Text
+                      style={[
+                        styles.sizeText,
+                        selectedColor === size && styles.selectedSizeText,
+                      ]}
+                    >
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {/* ////////////////////////////////////////// */}
               <Text style={styles.title}>Select size</Text>
               <View style={styles.sizeContainer}>
                 {sizes.map((size) => (
@@ -36,10 +86,24 @@ const SizeSelectorPopup = ({ visible, onClose }) => {
                   </TouchableOpacity>
                 ))}
               </View>
-              <TouchableOpacity style={styles.infoRow}>
-                <Text style={styles.infoText}>Size info</Text>
-                <Text style={styles.arrow}>{'>'}</Text>
-              </TouchableOpacity>
+              <View style={styles.quantityContainer}>
+                <Text style={styles.quantityLabel}>Quantity</Text>
+                <View style={styles.counter}>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => setSelectedQuantity((prev) => Math.max(1, (prev || 1) - 1))}
+                  >
+                    <Text style={styles.counterText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantityText}>{selectedQuantity || 1}</Text>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => setSelectedQuantity((prev) => (prev || 1) + 1)}
+                  >
+                    <Text style={styles.counterText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
               <TouchableOpacity style={styles.addToCartButton} onPress={onClose}>
                 <Text style={styles.addToCartText}>ADD TO CART</Text>
               </TouchableOpacity>
@@ -129,6 +193,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  quantityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 20,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  },
+  quantityLabel: {
+    fontSize: 16,
+    color: '#000',
+  },
+  counter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  counterButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E8D7EC',
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
+  counterText: {
+    fontSize: 20,
+    color: '#A45AA6',
+    fontWeight: '600',
+  },
+  quantityText: {
+    fontSize: 18,
+    color: '#000',
+    fontWeight: '600',
+    marginHorizontal: 5,
+  },
+  
 });
 
 export default SizeSelectorPopup;

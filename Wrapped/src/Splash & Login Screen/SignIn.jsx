@@ -48,7 +48,7 @@ const EmailExisting = async () => {
         } else if (response.status === 200) {
             console.log('heyy2' + response.data.message);
             setEmailExsit(true) ;  // Email exists
-            alert(response.data.message);
+            // alert(response.data.message);
         } else {
             setEmailExsit(false) ;  // Default to false if status is neither 200 nor 201
         }
@@ -76,7 +76,7 @@ const EmailExisting = async () => {
         if (!validateEmail(email)) {
             setEmailError('Please enter a valid email address.');
             isValid = false;
-        } else if (emailExsit) {  // Use await here
+        } else if (!emailExsit) {  // Use await here
             setEmailError('Email exists already.');
             isValid = false;
         } else {

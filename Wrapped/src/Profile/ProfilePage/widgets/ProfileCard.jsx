@@ -87,10 +87,10 @@ const ProfileCard = ({idUser,idAuth}) => {
             <Text style={styles.statLabel}>Sales</Text>
           </View>
           </TouchableOpacity>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>800</Text>
+          <TouchableOpacity onPress={()=>{navigation.navigate("myBag")}} style={styles.statItem}>
+            <Text style={styles.statValue}>3</Text>
             <Text style={styles.statLabel}>Basket</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
