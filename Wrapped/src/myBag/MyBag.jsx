@@ -5,8 +5,11 @@ import PromoCodeInput from './widgets/PromoCodeInput';
 import TotalAmount from './widgets/TotalAmount';
 import Recommendations from './widgets/Recommendations';
 import Footer from '../widgets/Footer';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const MyBag = () => {
+    const navigation = useNavigation();
+  
   const [promoCode, setPromoCode] = useState('');
   const cartItems = [
     {
@@ -55,7 +58,7 @@ const MyBag = () => {
           onChange={setPromoCode}
           onApply={() => console.log('Promo applied')}
         />
-        <TotalAmount amount={1245} onCheckout={() => console.log('Checkout')} />
+        <TotalAmount amount={1245} onCheckout={()=> navigation.navigate("Checkout")} />
         <Recommendations items={recommendations} />
       </ScrollView>
       <View style={styles.footerContainer}>

@@ -23,6 +23,8 @@ import MyBag from './src/myBag/MyBag';
 import WhatsHotPage from './src/WhatsHot/WhatsHot';
 import LayoutWrapper from './src/widgets/Layout_wrapper';
 import ArticleDetails from './src/Post/PostDetail/ArticleDetails';
+import Checkout from './src/myBag/Checkout';
+import AddAdress from './src/myBag/AddAdress';
 export default function App() {
   const Stack = createNativeStackNavigator();
   LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
@@ -45,7 +47,7 @@ export default function App() {
         <Stack.Screen name="UpdatePage" options={{ headerShown: false }} component={UpdatePage}/>
         <Stack.Screen name="SettingsPage" options={{ headerShown: false }} component={SettingsPage}/>
         <Stack.Screen name="MySales" options={{ headerShown: false }} component={MySales}/>
-        {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
+        {/* /////////////////////////////////////Brand//////////////////////////////////////////////////// */}
         <Stack.Screen name="ProfilePro" options={{ headerShown: false }} component={ProfilePro}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="PostDetails" options={{ headerShown: false }} component={ArticleDetails}/>
@@ -54,7 +56,10 @@ export default function App() {
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
         <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={() => <LayoutWrapper><WhatsHotPage /></LayoutWrapper>} />
         <Stack.Screen name="descovery" options={{ headerShown: false }} component={() => <LayoutWrapper><DescoveryPage /></LayoutWrapper>} />
+        {/* /////////////////////////////////////My Bag//////////////////////////////////////////////////// */}
         <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />
+        <Stack.Screen name="Checkout" options={{ headerShown: false }} component={Checkout} />
+        <Stack.Screen name="AddAdress" options={{ headerShown: false }} component={AddAdress} />
       </Stack.Navigator>
     </NavigationContainer>
   );
