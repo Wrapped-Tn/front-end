@@ -50,21 +50,23 @@ const ProfileCard = ({idUser,idAuth}) => {
   }
  }
 
-  useEffect(()=>{
-    GetUserCart(idUser,idAuth)
-    // if(!idgarde){
-    //   GetGradeCart(idgarde)
-    //   // setLoad(!load)
-    // }
-    // else{
-    //   GetUserCart(idUser.idUser)
-    //   GetGradeCart(idgarde);
-    // }
-  },[load])
+ useEffect(() => {
+  // Initial data fetch
+  GetUserCart(idUser, idAuth);
+
+  // Add focus listener to reload data when screen comes into focus
+  const unsubscribe = navigation.addListener('focus', () => {
+    GetUserCart(idUser, idAuth);
+    console.log('data reloadet')
+  });
+
+  // Cleanup subscription
+  return unsubscribe;
+}, [navigation, idUser, idAuth]);
 
   
   const optimizedImageUrl = `${userCard.profile_picture_url}?w=200&h=200&fit=fill`;
-  console.log(optimizedImageUrl);
+  console.log(`${PORT_URL}/uploads/profil/${userCard.role}/${userCard.user_id}/${userCard.profile_picture_url}`);
 
 
   return (
@@ -72,7 +74,7 @@ const ProfileCard = ({idUser,idAuth}) => {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{uri:userCard.profile_picture_url?`${PORT_URL}/uploads/profil/${userCard.role}/${userCard.user_id}/${userCard.profile_picture_url}`:userImg}} // Replace with the actual image URL
+          source={{uri:userCard.profile_picture_url?`${PORT_URL}/uploads/profil/${userCard.role}/${userCard.user_id}/${userCard.profile_picture_url}`:userImg}} 
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>

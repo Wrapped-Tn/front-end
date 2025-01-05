@@ -16,6 +16,7 @@ const UpdatePage = () => {
 
     const [user,setUser]=useState([])
     const [loading, setLoading] = useState(false);
+    const [refreshData, setRefreshData] = useState(false);
     
     console.log(user);
     
@@ -26,15 +27,18 @@ const UpdatePage = () => {
         setUser(response.data)
       }
     }catch(e){
-      console.log(e)
+      console.log("Error in GetOneUser",e)
     }
   }
 
   useEffect(()=>{
     GetOneUser()
-  },[])
+  },[refreshData])
 
-
+  const handleDataUpdate = () => {
+    setRefreshData(prev => !prev);
+    navigation.goBack();
+  };
 
     return(
         <View style={styles.container}>
@@ -47,11 +51,11 @@ const UpdatePage = () => {
             style={styles.gradient}
           />
             <View style={styles.Card}>
-                <UpdateCard userdata={userCards} fullname={name} grade={grade} idUser={idUser} idAuth={idAuth} PDP={PDP}/>
+                <UpdateCard userdata={userCards} fullname={name} grade={grade} idUser={idUser} idAuth={idAuth} PDP={PDP} onDataUpdate={handleDataUpdate}/>
             </View>
           </View>
           <SafeAreaView style={{ flex: 1,marginTop:'10%' }}>
-      <UserForm OneUser={user} />
+      <UserForm OneUser={user} onDataUpdate={handleDataUpdate} />
     </SafeAreaView>
 
           <View style={styles.footerContainer}>

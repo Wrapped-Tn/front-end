@@ -5,7 +5,6 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import EmailLogoW from "../../assets/EmailLogo.png"
 import GoogleLogoW from "../../assets/googleLogoW.png"
 import FbLogoW from "../../assets/fbLogoW.png"
-import auth from '@react-native-firebase/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
@@ -112,8 +111,7 @@ const LoginP1 = () => {
                 console.log('Something went wrong obtaining access token');
                 return;
             }
-            const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-            await auth().signInWithCredential(facebookCredential);
+
             // Naviguer vers la page principale ou après connexion réussie
             navigation.navigate("MainScreen"); // Remplacez "MainScreen" par votre écran principal
         } catch (error) {

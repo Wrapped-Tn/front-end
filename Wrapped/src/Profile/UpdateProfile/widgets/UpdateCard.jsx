@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker'; // For Expo, replace with your
 import axios from "axios";
 import {PORT ,PORT_URL} from '../../../Port';
 
-const UpdateCard = ({ fullname, grade,userdata, idUser,idAuth, PDP }) => {
+const UpdateCard = ({ fullname, grade, userdata, idUser, idAuth, PDP, onDataUpdate }) => {
   const [profileImage, setProfileImage] = useState(PDP);
   const [imageUpdated, setImageUpdated] = useState(false); 
   const [showConfirmation, setShowConfirmation] = useState(false); // Show confirmation modal
@@ -32,6 +32,7 @@ const confirmUpdate = async () => {
 
     if (response.status === 200) {
       Alert.alert("Success", "Profile image updated successfully!");
+      onDataUpdate(); // Call the callback to refresh data
     } else {
       Alert.alert("Error", "Failed to update profile image.");
     }

@@ -27,7 +27,7 @@ import Checkout from './src/myBag/Checkout';
 import AddAdress from './src/myBag/AddAdress';
 export default function App() {
   const Stack = createNativeStackNavigator();
-  LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
+  // LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
 
   return (
     <NavigationContainer>
