@@ -24,7 +24,7 @@ const SettingsPage = () => {
     </SafeAreaView> */}
 
           <View style={styles.footerContainer}>
-        <Footer />
+        <Footer person={'person'}/>
       </View>
         </View>
     )

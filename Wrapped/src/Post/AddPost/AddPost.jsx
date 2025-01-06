@@ -93,7 +93,7 @@ console.log(brands);
 
       {/* Footer */}
       <View style={styles.footerContainer}>
-        <Footer idUser={idUser} />
+        <Footer person={'add'} />
       </View>
     </View>
   );

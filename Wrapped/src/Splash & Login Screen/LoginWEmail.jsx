@@ -48,6 +48,7 @@ const LoginWEmail = () => {
                 const idAuth=response.data.idAuth
                 await AsyncStorage.setItem('authToken', token);
                 await AsyncStorage.setItem('idUser', idUser.toString()); 
+                await AsyncStorage.setItem('idAuth', idAuth.toString()); 
                 console.log(response.data);
                                
                    if(response.data.role=="brand"){

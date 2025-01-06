@@ -6,6 +6,7 @@ import SearchBar from './SearchBar';
 import Suggestions from './Suggestions';
 import Filters from './Filters';
 import PostItem from './PostItem';
+import Footer from '../widgets/Footer';
 
 const DiscoveryPage = () => {
   const route = useRoute();
@@ -121,6 +122,8 @@ const DiscoveryPage = () => {
   };
 
   return (
+    <View style={{flex: 1}}>
+
     <View style={styles.container}>
       <AppBar />
       <SearchBar searchText={searchText} setSearchText={setSearchText} setShowSuggestions={setShowSuggestions} />
@@ -140,6 +143,10 @@ const DiscoveryPage = () => {
         />
     </View>
       )}
+    </View>
+<View style={styles.footerContainer}>
+        <Footer />
+      </View>
     </View>
   );
 };

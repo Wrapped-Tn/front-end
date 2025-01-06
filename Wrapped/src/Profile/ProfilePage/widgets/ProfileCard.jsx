@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import iconSettings from '../../../../assets/settings.png';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';  // Add this import
+
 import axios from 'axios'
 import { PORT_URL ,PORT} from '../../../Port'
 
-const ProfileCard = ({idUser,idAuth}) => {
+const ProfileCard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -15,7 +17,36 @@ const ProfileCard = ({idUser,idAuth}) => {
   const [gradeCard,setGradeCard]=useState([])
   const [userImg,setUserImg]=useState("https://th.bing.com/th/id/OIP.1mSyfMp-r01kxBYitbubbAHaHa?rs=1&pid=ImgDetMain")
   const [idgarde,setIdgrade]=useState(null);
+  const [idUser, setIdUser] = useState(null);
+  const [idAuth, setIdAuth] = useState(null);
 
+  // Fetch user ID from AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('idUser');
+        setIdUser(userId);
+      } catch (e) {
+        console.error('Failed to fetch User ID:', e);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  // Fetch user ID from AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const idAuth = await AsyncStorage.getItem('idAuth');
+        setIdAuth(idAuth);
+      } catch (e) {
+        console.error('Failed to fetch User ID:', e);
+      }
+    };
+
+    fetchUserId();
+  }, []);
  console.log(idgarde);
  
  const GetUserCart =async(iduser,idauth)=>{

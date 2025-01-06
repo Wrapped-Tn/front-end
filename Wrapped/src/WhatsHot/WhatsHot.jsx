@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import AppBar from "./AppBar";
 import SearchBar from "./SearchBar";
 import PostsGrid from "./PostsGrid";
+import Footer from '../widgets/Footer';
 
 const WhatsHotPage = () => {
   const navigation = useNavigation();
@@ -101,6 +102,8 @@ const WhatsHotPage = () => {
   };
 
   return (
+    <View style={{flex:1}}>
+
     <View style={styles.container}>
       <AppBar />
       <View style={styles.content}>
@@ -119,6 +122,10 @@ const WhatsHotPage = () => {
             />
           </>
         )}
+      </View>
+    </View>
+    <View style={styles.footerContainer}>
+        <Footer />
       </View>
     </View>
   );

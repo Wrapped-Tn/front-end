@@ -27,7 +27,7 @@ import Checkout from './src/myBag/Checkout';
 import AddAdress from './src/myBag/AddAdress';
 export default function App() {
   const Stack = createNativeStackNavigator();
-  // LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
+  LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
 
   return (
     <NavigationContainer>
@@ -54,8 +54,8 @@ export default function App() {
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
         <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
-        <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={() => <LayoutWrapper><WhatsHotPage /></LayoutWrapper>} />
-        <Stack.Screen name="descovery" options={{ headerShown: false }} component={() => <LayoutWrapper><DescoveryPage /></LayoutWrapper>} />
+        <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={WhatsHotPage} />
+        <Stack.Screen name="descovery" options={{ headerShown: false }} component={DescoveryPage} />
         {/* /////////////////////////////////////My Bag//////////////////////////////////////////////////// */}
         <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />
         <Stack.Screen name="Checkout" options={{ headerShown: false }} component={Checkout} />
