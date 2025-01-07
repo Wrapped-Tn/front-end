@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard,ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useNavigation } from "@react-navigation/native";
 
 
@@ -22,6 +22,7 @@ const FilterPopup = ({ isPopupVisible, setIsPopupVisible }) => {
   const [maxPrice, setMaxPrice] = useState(1000);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [dropVisible, setDropVisible] = useState(false);
   const [currentModal, setCurrentModal] = useState(null);
 
   const categories = [
@@ -62,43 +63,43 @@ const FilterPopup = ({ isPopupVisible, setIsPopupVisible }) => {
     { label: 'Skin Tone', value: 'skin tone' },
   ];
 
-  const handleCategorySelect = (value) => {
-    setSelectedCategory(value);
-    setModalVisible(false);
-  };
-
-  const handleColorSelect = (value) => {
-    setSelectedColor(value);
-    setModalVisible(false);
-  };
-
-  const handleBrandSelect = (value) => {
-    setSelectedBrand(value);
-    setModalVisible(false);
-  };
-
-  const handleOccasionSelect = (value) => {
-    setSelectedOccasion(value);
-    setModalVisible(false);
-  };
-
-  const handleItemSelect = (value) => {
-    setSelectedItem(value);
-    setModalVisible(false);
-  };
-
-  const handleProFilterSelect = (value) => {
-    setSelectedProFilter(value);
-    setModalVisible(false);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
 
   const openModal = (type) => {
     setCurrentModal(type);
-    setModalVisible(true);
+    setDropVisible(!dropVisible);
+  };
+
+  const DropDown = ({ current,selected,setSelected}) => {
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.dropDownContainer}
+      >
+        {current.map((option, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.optionContainer,
+              selected === option.label && styles.selectedOption, // Ajouter la couleur de sélection
+            ]}
+            onPress={() => {
+              setSelected(option.label); // Mettre à jour la catégorie sélectionnée
+              // setDropVisible(false); // Fermer le menu déroulant après la sélection
+            }}
+          >
+            <Text
+              style={[
+                styles.optionText,
+                selected === option.label && styles.selectedText, // Appliquer une couleur spécifique au texte
+              ]}
+            >
+              {option.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    );
   };
 
   return (
@@ -113,48 +114,80 @@ const FilterPopup = ({ isPopupVisible, setIsPopupVisible }) => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.popup}>
               <Text style={styles.title}>Choose Filters</Text>
-
-              <View style={styles.row}>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('category')}>
-                  <Text style={styles.buttonText}>{selectedCategory}</Text>
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('category')}>
+                  <Text style={styles.buttonText}>{selectedCategory || 'Select Category'}</Text>
+                  {dropVisible && currentModal === 'category' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('color')}>
-                  <Text style={styles.buttonText}>{selectedColor}</Text>
-                </TouchableOpacity>
+                {dropVisible && currentModal === 'category' && <DropDown current={categories} selected={selectedCategory} setSelected={setSelectedCategory}  />}
               </View>
 
-              <View style={styles.row}>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('brand')}>
-                  <Text style={styles.buttonText}>{selectedBrand}</Text>
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('color')}>
+                  <Text style={styles.buttonText}>{selectedColor || 'Select Color'}</Text>
+                  {dropVisible && currentModal === 'color' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('occasion')}>
-                  <Text style={styles.buttonText}>{selectedOccasion}</Text>
-                </TouchableOpacity>
+                {dropVisible && currentModal === 'color' && <DropDown current={colors} selected={selectedColor} setSelected={setSelectedColor} />}
               </View>
 
-              <View style={styles.row}>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('item')}>
-                  <Text style={styles.buttonText}>{selectedItem}</Text>
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('brand')}>
+                  <Text style={styles.buttonText}>{selectedBrand || 'Select Brand'}</Text>
+                  {dropVisible && currentModal === 'brand' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => openModal('proFilter')}>
-                  <Text style={styles.buttonText}>{selectedProFilter}</Text>
-                </TouchableOpacity>
+                {dropVisible && currentModal === 'brand' && <DropDown current={brands} selected={selectedBrand} setSelected={setSelectedBrand} />}
               </View>
 
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('occasion')}>
+                  <Text style={styles.buttonText}>{selectedOccasion || 'Select Occasion'}</Text>
+                  {dropVisible && currentModal === 'occasion' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
+                </TouchableOpacity>
+                {dropVisible && currentModal === 'occasion' && <DropDown current={occasions} selected={selectedOccasion} setSelected={setSelectedOccasion} />}
+              </View>
+
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('item')}>
+                  <Text style={styles.buttonText}>{selectedItem || 'Select Item'}</Text>
+                  {dropVisible && currentModal === 'item' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
+                </TouchableOpacity>
+                {dropVisible && currentModal === 'item' && <DropDown current={items} selected={selectedItem} setSelected={setSelectedItem} />}
+              </View>
+
+              <View style={{marginTop:10}}>
+                <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between'}} onPress={() => openModal('proFilter')}>
+                  <Text style={styles.buttonText}>{selectedProFilter || 'Select Pro Filter'}</Text>
+                  {dropVisible && currentModal === 'proFilter' ? (
+                    <FontAwesome name="caret-down" size={24} color="black" />
+                  ) : (
+                    <FontAwesome name="caret-right" size={24} color="black" />
+                  )}
+                </TouchableOpacity>
+                {dropVisible && currentModal === 'proFilter' && <DropDown current={proFilters} selected={selectedProFilter} setSelected={setSelectedProFilter} />}
+              </View>
               <View style={styles.priceContainer}>
                 <Text style={styles.priceTitle}>Select Price Range</Text>
 
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.priceText}>Min: ${minPrice}</Text>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={0}
-                    maximumValue={1000}
-                    step={10}
-                    value={minPrice}
-                    onValueChange={(value) => setMinPrice(value)}
-                  />
-                </View>
 
                 <View style={styles.sliderContainer}>
                   <Text style={styles.priceText}>Max: ${maxPrice}</Text>
@@ -169,85 +202,7 @@ const FilterPopup = ({ isPopupVisible, setIsPopupVisible }) => {
                 </View>
 
                 <Text style={styles.priceText}>Price Range: ${minPrice} - ${maxPrice}</Text>
-              </View>
-
-              <Modal
-                visible={modalVisible}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={closePopup}
-              >
-                <TouchableWithoutFeedback onPress={closePopup}>
-                  <View style={styles.overlay}>
-                    <View style={styles.modalContent}>
-                      <Text style={styles.modalTitle}>Select {currentModal}</Text>
-                      <View style={styles.modalOptions}>
-                        {currentModal === 'category' &&
-                          categories.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleCategorySelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        {currentModal === 'color' &&
-                          colors.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleColorSelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        {currentModal === 'brand' &&
-                          brands.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleBrandSelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        {currentModal === 'occasion' &&
-                          occasions.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleOccasionSelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        {currentModal === 'item' &&
-                          items.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleItemSelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        {currentModal === 'proFilter' &&
-                          proFilters.map((option, index) => (
-                            <TouchableOpacity
-                              key={index}
-                              style={styles.modalOption}
-                              onPress={() => handleProFilterSelect(option.value)}
-                            >
-                              <Text style={styles.modalOptionText}>{option.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                      </View>
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </Modal>
-
+              </View>              
               <TouchableOpacity style={styles.pinkButton} onPress={() => {
                navigation.navigate("descovery", {
                 selectedCategory: selectedCategory !== 'Choose Category' ? selectedCategory : '',
@@ -276,101 +231,99 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  popup: {
-    width: '100%',
-    height: 610,
-    backgroundColor: 'white',
-    padding: 12,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+  dropDownContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  button: {
-    width: '45%',
-    padding: 15,
-    backgroundColor: '#f0f0f0',
+  optionContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    marginHorizontal: 10,
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: '#e1e1e1',
   },
-  buttonText: {
-    fontSize: 14,
+  optionText: {
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
   },
+  popup: {
+    width: '100%',
+    height: 650,
+    backgroundColor: 'white',
+    padding: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#2c3e50',
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#7f8c8d',
+  },
   priceContainer: {
-    marginTop: 20,
+    marginTop: 30,
   },
   priceTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 15,
     textAlign: 'center',
+    color: '#2c3e50',
   },
   sliderContainer: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   priceText: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
+    color: '#2980b9',
   },
   slider: {
     width: '100%',
     height: 40,
   },
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'white',
-  },
-  modalOptions: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-  },
-  modalOption: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  modalOptionText: {
-    fontSize: 16,
-  },
   pinkButton: {
-    backgroundColor: 'pink',
-    padding: 12,
-    borderRadius: 5,
-    marginTop: 20,
+    backgroundColor: '#AD669E',
+    padding: 14,
+    borderRadius: 30,
+    marginTop: 25,
     alignItems: 'center',
   },
   pinkButtonText: {
-    fontSize: 18,
+    fontSize: 20,
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '600',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 25,
+  },
+  selectedOption: {
+    backgroundColor: '#FFB6C8', // Couleur de fond sélectionnée
+  },
+  selectedText: {
+    color: '#fff', // Couleur du texte sélectionné
   },
 });
+
 
 export default FilterPopup;

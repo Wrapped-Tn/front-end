@@ -49,6 +49,8 @@ const LoginWEmail = () => {
                 await AsyncStorage.setItem('authToken', token);
                 await AsyncStorage.setItem('idUser', idUser.toString()); 
                 await AsyncStorage.setItem('idAuth', idAuth.toString()); 
+                await AsyncStorage.setItem('selectedIcon', 'person');
+
                 console.log(response.data);
                                
                    if(response.data.role=="brand"){
@@ -263,6 +265,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
     },
+    
 });
 
 export default LoginWEmail;

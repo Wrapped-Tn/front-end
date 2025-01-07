@@ -71,7 +71,12 @@ const FooterWithConcaveShape = () => {
 
   // Toggle popup visibility
   const handleCirclePress = () => {
-    setIsPopupVisible(!isPopupVisible);
+    if(selectedIcon=='person'||selectedIcon=='add'){
+      setIsPopupVisible(isPopupVisible);
+    }
+    else{
+      setIsPopupVisible(!isPopupVisible);
+    }
   };
 
   // Load previously selected icon from AsyncStorage
