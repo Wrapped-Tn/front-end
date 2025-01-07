@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, FlatList,Image,ScrollView } from 'react-native';
 import OrderCard from './OrederCard'
+import Facturation from './Facturation';
 const MyFashionistas = () => {
   const [activeButton, setActiveButton] = useState('Orders'); // Track the active button
 
@@ -53,7 +54,10 @@ const MyFashionistas = () => {
         </TouchableOpacity>
       </View>
       <View style={{margin:5}}>
-      <OrderCard/>
+        {
+        activeButton === 'Orders' ?<OrderCard/>:
+        activeButton === 'Facturations' ?<Facturation/>:null
+        }
       </View>
     </View>
   );

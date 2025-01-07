@@ -16,14 +16,14 @@ const data = [
     items: 2,
     price: "25 Dt",
     status: "en cours",
-    image: "https://via.placeholder.com/100", // Remplacez par l'URL de votre image
+    image: "https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=", // Remplacez par l'URL de votre image
   },
   {
     id: "123478",
     items: 2,
     price: "25 Dt",
     status: "en cours",
-    image: "https://via.placeholder.com/100", // Remplacez par l'URL de votre image
+    image: "https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=", // Remplacez par l'URL de votre image
   },
 ];
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, FlatList,Image,ScrollView } from 'react-native';
 import TagList from './TagList'
+import ApprovedTag from './ApprovedTag';
 const MyFashionistas = () => {
   const [activeButton, setActiveButton] = useState('New Tag'); // Track the active button
 
@@ -64,7 +65,8 @@ const MyFashionistas = () => {
         </TouchableOpacity>
       </View>
       <View style={{margin:5}}>
-      <TagList/>
+        {activeButton === 'New Tag' ?<TagList/>:
+        activeButton === 'approved tags' ? <ApprovedTag/>:null}
       </View>
     </View>
   );
