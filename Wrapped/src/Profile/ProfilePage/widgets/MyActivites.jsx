@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, FlatList,Image,ScrollView } from 'react-native';
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const MyActivitie = () => {
+  const navigation = useNavigation();
   const [activeButton, setActiveButton] = useState('favorites'); // Track the active button
 
   const handlePress = (button) => {
@@ -25,13 +27,16 @@ const MyActivitie = () => {
     borderColor: '#FFB6C8',
   });
   const renderImageItem = ({ item }) => (
-    <View style={styles.imageContainer}>
+    <TouchableOpacity onPress={() => {
+      navigation.navigate("PostDetails",);
+    }}
+    style={styles.imageContainer}>
       <Image
         source={{ uri: item.source }}
         style={styles.image}
         resizeMode="cover" // Ensure the image covers the container
       />
-    </View>
+    </TouchableOpacity>
   );
   const renderDivider = () => <View style={styles.divider} />;
 

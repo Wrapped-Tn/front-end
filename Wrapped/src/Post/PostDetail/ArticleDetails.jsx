@@ -7,13 +7,17 @@ import ButtonsWidget from './Widgets/ButtonsWidget';
 import ActionsWidget from './Widgets/ActionsWidget';
 import CommentWidget from './Widgets/CommentWidget.jsx';
 import SizeSelectorPopup from './Widgets/SizeSelectorPopup.jsx';
+import UserDetails from './Widgets/UserDetailsPost.jsx';
 import Footer from '../../widgets/Footer.jsx';
 
 const ArticleDetails = () => {
     const imageSource = { uri: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' };
-    const tags = ['React', 'Native', 'Widgets'];
+    const tags = ['sport', 'classique'];
     const caption = 'This is a sample caption';
     const buttons = ['Button 1', 'Button 2', 'Button 3'];
+    const userName="John Doe"
+    const userIcon="https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c="
+    const postDate="January 8, 2025"
     const [showPop,setShowPop]=useState(false)
     const handleAddCart=()=>{
       console.log('hello');
@@ -24,16 +28,23 @@ const ArticleDetails = () => {
     };
     return (
         <View style={styles.mainContainer}>
+            <UserDetails 
+             userName="John Doe"
+             userIcon="https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c="
+             postDate="January 8, 2025"
+            />
             <ImageWidget imageSource={imageSource} />
             <ActionsWidget handleAddCart={handleAddCart} />
             
-            <View style={styles.captionContainer}>
-                <CaptionWidget caption={caption} />
+            <ScrollView style={styles.captionContainer}>
+            <CaptionWidget
+                caption={caption}
+                />
                 <TagsWidget tags={tags} />
                 <View style={{height:'78%'}}>
                 <CommentWidget />
                 </View>
-            </View>
+            </ScrollView>
             <SizeSelectorPopup visible={showPop} onClose={handleClosePopup} />
             {/* <ButtonsWidget buttons={buttons} /> */}
             <Footer />
@@ -54,7 +65,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF2F6FF',
         borderRadius: 10,
         marginTop:'-48%',
-        height:'55%'
+        height:'55%',
+        marginBottom: '5%',
+        height: '100%',
         // Retirez position: 'Absolute' pour éviter de couvrir d'autres éléments
     },
 });

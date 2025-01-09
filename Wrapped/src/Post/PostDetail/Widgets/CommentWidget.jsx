@@ -7,7 +7,9 @@ import {
   FlatList,
   Image,
   ScrollView,
+  TouchableOpacity
 } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const comments = [
   {
@@ -53,9 +55,14 @@ const comments = [
 ];
 
 const CommentWidget = () => {
+  const navigation = useNavigation();
+
+
   const renderComment = ({ item }) => (
     <View style={styles.commentContainer}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
+        <TouchableOpacity  onPress={()=>{navigation.navigate("VisitorProfilePage" )}}>
+        <Image source={{ uri: item.avatar }} style={styles.avatar} />
+      </TouchableOpacity>
       <View style={styles.commentContent}>
         <View style={styles.header}>
           <Text style={styles.userName}>{item.user}</Text>
@@ -68,7 +75,7 @@ const CommentWidget = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Input Box */}
       <View style={styles.inputContainer}>
         <TextInput
@@ -84,7 +91,7 @@ const CommentWidget = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderComment}
       />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -95,6 +102,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingTop: 20,
     borderRadius: 10,
+    marginBottom: "20%",
   },
   inputContainer: {
     flexDirection: 'row',

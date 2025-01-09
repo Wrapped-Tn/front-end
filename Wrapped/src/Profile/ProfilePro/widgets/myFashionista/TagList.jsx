@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, Image, FlatList, Dimensions, TouchableOpacity } from "react-native";
 import ArticleVerificationModal from '../myFashionista/VerifModal'
+import { useRoute, useNavigation } from '@react-navigation/native';
+
 const data = [
   {
     id: "1",
@@ -26,6 +28,7 @@ const data = [
 ];
 
 const TagList = () => {
+  const navigation = useNavigation();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [articleToVerify, setArticleToVerify] = useState({
@@ -50,7 +53,9 @@ const TagList = () => {
     <View style={styles.card}>
       <View style={styles.row}>
         <View style={styles.detailsContainer}>
+          <TouchableOpacity onPress={()=>{navigation.navigate("VisitorProfilePage" )}}>
           <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          </TouchableOpacity>
           <View style={styles.textContainer}>
             <Text style={styles.role}>{item.role}</Text>
             <Text style={styles.time}>{item.time}</Text>
