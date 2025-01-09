@@ -25,6 +25,7 @@ import LayoutWrapper from './src/widgets/Layout_wrapper';
 import ArticleDetails from './src/Post/PostDetail/ArticleDetails';
 import Checkout from './src/myBag/Checkout';
 import AddAdress from './src/myBag/AddAdress';
+import VisitorProfilePage from './src/Profile/ViewProfile/VisitorProfilePage'
 export default function App() {
   const Stack = createNativeStackNavigator();
   LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
@@ -60,6 +61,9 @@ export default function App() {
         <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />
         <Stack.Screen name="Checkout" options={{ headerShown: false }} component={Checkout} />
         <Stack.Screen name="AddAdress" options={{ headerShown: false }} component={AddAdress} />
+        {/* /////////////////////////////////////VisitorProfilePage//////////////////////////////////////////////////// */}
+        <Stack.Screen name="VisitorProfilePage" options={{ headerShown: false }} component={VisitorProfilePage} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

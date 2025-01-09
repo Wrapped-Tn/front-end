@@ -55,14 +55,14 @@ const MyFashionistas = () => {
           approved tags
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.button2, buttonStyle('Activities')]} // Apply styles based on active button
           onPress={() => handlePress('Activities')}
         >
           <Text style={[styles.text2, { color: activeButton === 'Activities' ? 'white' : '#AD669E' }]}>
           Activities
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={{margin:5}}>
         {activeButton === 'New Tag' ?<TagList/>:

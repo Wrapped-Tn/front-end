@@ -77,8 +77,8 @@ const ProfileCard = ({idUser,idAuth}) => {
 
       {/* Scrollable Tag Row */}
       <View style={styles.tagRow}>
-      <Text style={styles.userName}>Bio :</Text>
-      <Text style={styles.userGrade}>""wdvcddffffffffffffffffffffffffffffffffffffffffffffffffffffffv"</Text>
+      {/* <Text style={styles.userName}>Bio :</Text>
+      <Text style={styles.userGrade}>""wdvcddffffffffffffffffffffffffffffffffffffffffffffffffffffffv"</Text> */}
       </View>
 
       {/* Bottom Buttons */}
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   tagRow: {
     flexDirection: "row",
     alignItems: "flex-start", // Assure que le contenu est aligné à gauche
-    marginVertical: 10,
+    marginVertical: 30,
     marginTop: 15,
     width:"100%"
   }
