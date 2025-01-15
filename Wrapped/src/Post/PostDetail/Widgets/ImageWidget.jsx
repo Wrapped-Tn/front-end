@@ -3,14 +3,19 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'reac
 
 //  Image widget
 const ImageWidget = ({ imageSource }) => {
+  
   return (
     <View style={styles.imageContainer}>
-      <Image source={imageSource} style={styles.image} />
-    </View>
+    <Image 
+      source={imageSource}
+      style={styles.image} 
+    />
+  </View>
   );
 };
 const styles = StyleSheet.create({
     imageContainer: {
+      // flex:1
         // marginBottom: 20,
       },
       image: {

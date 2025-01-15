@@ -36,14 +36,14 @@ const MyFashionistas = () => {
             Orders
           </Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={[styles.button2, buttonStyle('statistics')]} // Apply styles based on active button
           onPress={() => handlePress('statistics')}
         >
           <Text style={[styles.text2, { color: activeButton === 'statistics' ? 'white' : '#AD669E' }]}>
           statistics
           </Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button2, buttonStyle('Facturations')]} // Apply styles based on active button
           onPress={() => handlePress('Facturations')}

@@ -106,7 +106,7 @@ const WhatsHotPage = () => {
 
     <View style={styles.container}>
       <AppBar />
-      <View style={styles.content}>
+        <View style={styles.content}>
         <SearchBar searchQuery={searchQuery} handleSearch={handleSearch} />
         {error && <Text style={styles.errorMessage}>{error}</Text>}
         {loading ? (

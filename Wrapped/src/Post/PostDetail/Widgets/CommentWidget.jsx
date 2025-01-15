@@ -1,13 +1,11 @@
-import React from 'react';
-import {
+import React, { useState } from 'react';import {
   View,
   Text,
   StyleSheet,
   TextInput,
   FlatList,
   Image,
-  ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
@@ -56,7 +54,14 @@ const comments = [
 
 const CommentWidget = () => {
   const navigation = useNavigation();
+  const [commentText, setCommentText] = useState('');
 
+  const handleSendComment = () => {
+    if (commentText.trim()) {
+      console.log('Comment sent:', commentText);
+      setCommentText(''); // Clear the input after sending
+    }
+  };
 
   const renderComment = ({ item }) => (
     <View style={styles.commentContainer}>
@@ -76,22 +81,27 @@ const CommentWidget = () => {
 
   return (
     <View style={styles.container}>
-      {/* Input Box */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="comment..."
-          style={styles.input}
-          placeholderTextColor="#999"
-        />
-      </View>
-
-      {/* Comments List */}
-      <FlatList
-        data={comments}
-        keyExtractor={(item) => item.id}
-        renderItem={renderComment}
+    {/* Input Box */}
+    <View style={styles.inputContainer}>
+      <TextInput
+        placeholder="Comment..."
+        style={styles.input}
+        placeholderTextColor="#999"
+        value={commentText}
+        onChangeText={setCommentText} // Handle text change
       />
+      <TouchableOpacity onPress={handleSendComment} style={styles.sendButton}>
+        <Text style={styles.sendButtonText}>Send</Text>
+      </TouchableOpacity>
     </View>
+
+    {/* Comments List */}
+    <FlatList
+      data={comments}
+      keyExtractor={(item) => item.id}
+      renderItem={renderComment}
+    />
+  </View>
   );
 };
 
@@ -159,6 +169,17 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 12,
     color: '#aaa',
+  },
+  sendButton: {
+    paddingLeft: 10,
+    paddingRight: 15,
+    paddingVertical: 5,
+    backgroundColor: '#ffb6c8',
+    borderRadius: 20,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

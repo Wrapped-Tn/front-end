@@ -132,11 +132,11 @@ const ProfileCardView = () => {
 
       {/* Scrollable Tag Row */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagRow}>
-        <Text style={styles.tag}>option1</Text>
+        {/* <Text style={styles.tag}>option1</Text>
         <Text style={styles.tag}>option2</Text>
         <Text style={styles.tag}>option3</Text>
         <Text style={styles.tag}>option4</Text>
-        <Text style={styles.tag}>option5</Text>
+        <Text style={styles.tag}>option5</Text> */}
       </ScrollView>
       {/* Bottom Buttons */}
     </View>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // justifyContent: 'flex-start',
     marginVertical: 10,
-    marginTop:35
+    marginTop:55
   },
   tag: {
     backgroundColor: 'rgba(255, 182, 200, 0.31)',

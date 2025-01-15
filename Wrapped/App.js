@@ -25,7 +25,8 @@ import LayoutWrapper from './src/widgets/Layout_wrapper';
 import ArticleDetails from './src/Post/PostDetail/ArticleDetails';
 import Checkout from './src/myBag/Checkout';
 import AddAdress from './src/myBag/AddAdress';
-import VisitorProfilePage from './src/Profile/ViewProfile/VisitorProfilePage'
+import VisitorProfilePage from './src/Profile/ViewProfile/VisitorProfilePage';
+import WhatsHotV2 from './src/WhatsHotv2/WhatshotPage'
 export default function App() {
   const Stack = createNativeStackNavigator();
   LogBox.ignoreAllLogs(); // Ignorer tous les avertissements
@@ -55,7 +56,7 @@ export default function App() {
         <Stack.Screen name="AddPost" options={{ headerShown: false }} component={AddPost}/>
         <Stack.Screen name="AddBrand" options={{ headerShown: false }} component={AddBrand}/>
         {/* /////////////////////////////////////POST//////////////////////////////////////////////////// */}
-        <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={WhatsHotPage} />
+        <Stack.Screen name="whatsHot" options={{ headerShown: false }} component={WhatsHotV2} />
         <Stack.Screen name="descovery" options={{ headerShown: false }} component={DescoveryPage} />
         {/* /////////////////////////////////////My Bag//////////////////////////////////////////////////// */}
         <Stack.Screen name="myBag" options={{ headerShown: false }} component={MyBag} />

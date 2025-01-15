@@ -17,8 +17,8 @@ console.log(brands);
   ]);
 
   const [description, setDescription] = useState('');
-  const [compositions, setCompositions] = useState('');
-  const [occasion, setOccasion] = useState('');
+  const [compositions, setCompositions] = useState([]);
+  const [occasion, setOccasion] = useState([]);
   const [infoBrand, setInfoBrand] = useState(brands);
 
   const handleAddImage = () => {

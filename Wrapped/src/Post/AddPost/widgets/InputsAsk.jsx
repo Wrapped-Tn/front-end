@@ -5,17 +5,15 @@ import iconAddImg from '../../../../assets/addimg.png'
 import pencilicon from '../../../../assets/pencil.png'
 
 const InputsAsk = ({ description, setDescription, compositions, setCompositions, occasion, setOccasion }) => {
-  const [selectedCompositions, setSelectedCompositions] = useState([]);
-  const [selectedOccasions, setSelectedOccasions] = useState([]);
-
+  
   const handleCompositionChange = (item) => {
-    setSelectedCompositions((prevState) =>
+    setCompositions((prevState) =>
       prevState.includes(item) ? prevState.filter((i) => i !== item) : [...prevState, item]
     );
   };
 
   const handleOccasionChange = (item) => {
-    setSelectedOccasions((prevState) =>
+    setOccasion((prevState) =>
       prevState.includes(item) ? prevState.filter((i) => i !== item) : [...prevState, item]
     );
   };
@@ -128,9 +126,9 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
 
         <Example
           text={"What are the compositions of your outfit?"}
-          selectedValue={selectedCompositions}
+          selectedValue={compositions}
           onValueChange={itemValue =>
-            setSelectedCompositions(prev =>
+            setCompositions(prev =>
               prev.includes(itemValue)
                 ? prev.filter(value => value !== itemValue)
                 : [...prev, itemValue]
@@ -141,9 +139,9 @@ const InputsAsk = ({ description, setDescription, compositions, setCompositions,
 
         <Example
           text={"For what occasion is your outfit?"}
-          selectedValue={selectedOccasions}
+          selectedValue={occasion}
           onValueChange={itemValue =>
-            setSelectedOccasions(prev =>
+            setOccasion(prev =>
               prev.includes(itemValue)
                 ? prev.filter(value => value !== itemValue)
                 : [...prev, itemValue]

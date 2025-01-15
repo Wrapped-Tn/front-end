@@ -129,11 +129,11 @@ const ProfileCard = () => {
 
       {/* Scrollable Tag Row */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagRow}>
-        <Text style={styles.tag}>option1</Text>
+        {/* <Text style={styles.tag}>option1</Text>
         <Text style={styles.tag}>option2</Text>
         <Text style={styles.tag}>option3</Text>
         <Text style={styles.tag}>option4</Text>
-        <Text style={styles.tag}>option5</Text>
+        <Text style={styles.tag}>option5</Text> */}
       </ScrollView>
 
       {/* Bottom Buttons */}

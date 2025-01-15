@@ -49,14 +49,14 @@ const LoginWEmail = () => {
                 await AsyncStorage.setItem('authToken', token);
                 await AsyncStorage.setItem('idUser', idUser.toString()); 
                 await AsyncStorage.setItem('idAuth', idAuth.toString()); 
-                await AsyncStorage.setItem('selectedIcon', 'person');
+                await AsyncStorage.setItem('selectedIcon', 'flame');
 
                 console.log(response.data);
                                
                    if(response.data.role=="brand"){
-                       navigation.navigate("ProfilePro", { token,idUser,idAuth });
+                       navigation.navigate("whatsHot", { token,idUser,idAuth });
                    }else{
-                    navigation.navigate("ProfilePage", { token,idUser,idAuth });
+                    navigation.navigate("whatsHot", { token,idUser,idAuth });
                    }
             } else {
                 throw new Error('Login failed'); // Handle non-200 responses
