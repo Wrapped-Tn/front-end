@@ -12,6 +12,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import FilterPopup from './FilterPopup'; // Import the popup component
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserFooter from './UserFooter';
+import BrandFooter from './BrandFooter';
 
 const { width } = Dimensions.get('window');
 
@@ -21,21 +23,25 @@ const FooterWithConcaveShape = () => {
 
   // State for storing the user ID
   const [idUser, setIdUser] = useState(null);
-
+  const [role,setRole]=useState('')
   // Fetch user ID from AsyncStorage
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchStorage = async () => {
       try {
         const userId = await AsyncStorage.getItem('idUser');
+        const role = await AsyncStorage.getItem('role');
         setIdUser(userId);
+        setRole(role);
       } catch (e) {
         console.error('Failed to fetch User ID:', e);
       }
     };
 
-    fetchUserId();
+    fetchStorage();
   }, []);
 
+  console.log('role :'+role);
+  
   // State for managing selected icon and popup visibility
   const [selectedIcon, setSelectedIcon] = useState('person');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -98,70 +104,75 @@ const FooterWithConcaveShape = () => {
   }, [selectedIcon]);
 
   return (
-    <View style={styles.container}>
-      {/* Popup component */}
-      {isPopupVisible && (
-        <FilterPopup 
-          isPopupVisible={isPopupVisible} 
-          setIsPopupVisible={setIsPopupVisible} 
-        />
-      )}
+    
+    <View style={{ flex: 1 }}>
+    {role === 'brand' ? <BrandFooter  navigation={navigation} selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon}/> : <UserFooter  navigation={navigation} selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon} />}
+  </View>
+    
+    // <View style={styles.container}>
+    //   {/* Popup component */}
+    //   {isPopupVisible && (
+    //     <FilterPopup 
+    //       isPopupVisible={isPopupVisible} 
+    //       setIsPopupVisible={setIsPopupVisible} 
+    //     />
+    //   )}
 
-      {/* Footer with concave shape */}
-      {!isKeyboardVisible && (
-        <View style={styles.footer}>
-          <Svg height="60" width={width} viewBox={`0 0 ${width} 60`} style={styles.svg}>
-            <Path
-              d={`M0 -3 H${width} V100 H0 Z M${width / 2 - 55} -8 Q${width / 2} 85 ${width / 2 + 55} -8 Z`}
-              fill="white"
-              stroke="#ccc"
-              strokeWidth="0"
-            />
-          </Svg>
+    //   {/* Footer with concave shape */}
+    //   {!isKeyboardVisible && (
+    //     <View style={styles.footer}>
+    //       <Svg height="60" width={width} viewBox={`0 0 ${width} 60`} style={styles.svg}>
+    //         <Path
+    //           d={`M0 -3 H${width} V100 H0 Z M${width / 2 - 55} -8 Q${width / 2} 85 ${width / 2 + 55} -8 Z`}
+    //           fill="white"
+    //           stroke="#ccc"
+    //           strokeWidth="0"
+    //         />
+    //       </Svg>
 
-          {/* Central circle with logo */}
-          <TouchableOpacity style={styles.circle} onPress={handleCirclePress}>
-            <Image source={require('../../assets/Logo&Name.png')} style={styles.logo} />
-          </TouchableOpacity>
+    //       {/* Central circle with logo */}
+    //       <TouchableOpacity style={styles.circle} onPress={handleCirclePress}>
+    //         <Image source={require('../../assets/Logo&Name.png')} style={styles.logo} />
+    //       </TouchableOpacity>
 
-          {/* Icon navigation */}
-          <View style={styles.iconContainer}>
-            <TouchableOpacity onPress={() => handleIconPress('flame', 'whatsHot')}>
-              <Icon
-                name="flame-outline"
-                size={30}
-                color={selectedIcon === 'flame' ? '#AD669E' : 'black'}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleIconPress('eye', 'descovery')}>
-              <Icon
-                name="eye-outline"
-                size={30}
-                color={selectedIcon === 'eye' ? '#AD669E' : 'black'}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleIconPress('add', 'AddPost')}>
-              <Icon
-                name="add-outline"
-                size={30}
-                color={selectedIcon === 'add' ? '#AD669E' : 'black'}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleIconPress('person', 'ProfilePage')}>
-              <Icon
-                name="person-outline"
-                size={30}
-                color={selectedIcon === 'person' ? '#AD669E' : 'black'}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
+    //       {/* Icon navigation */}
+    //       <View style={styles.iconContainer}>
+    //         <TouchableOpacity onPress={() => handleIconPress('flame', 'whatsHot')}>
+    //           <Icon
+    //             name="flame-outline"
+    //             size={30}
+    //             color={selectedIcon === 'flame' ? '#AD669E' : 'black'}
+    //             style={styles.icon}
+    //           />
+    //         </TouchableOpacity>
+    //         <TouchableOpacity onPress={() => handleIconPress('eye', 'descovery')}>
+    //           <Icon
+    //             name="eye-outline"
+    //             size={30}
+    //             color={selectedIcon === 'eye' ? '#AD669E' : 'black'}
+    //             style={styles.icon}
+    //           />
+    //         </TouchableOpacity>
+    //         <TouchableOpacity onPress={() => handleIconPress('add', 'AddPost')}>
+    //           <Icon
+    //             name="add-outline"
+    //             size={30}
+    //             color={selectedIcon === 'add' ? '#AD669E' : 'black'}
+    //             style={styles.icon}
+    //           />
+    //         </TouchableOpacity>
+    //         <TouchableOpacity onPress={() => handleIconPress('person', 'ProfilePage')}>
+    //           <Icon
+    //             name="person-outline"
+    //             size={30}
+    //             color={selectedIcon === 'person' ? '#AD669E' : 'black'}
+    //             style={styles.icon}
+    //           />
+    //         </TouchableOpacity>
+    //       </View>
+    //     </View>
+    //   )}
+    // </View>
   );
 };
 

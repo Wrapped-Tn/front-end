@@ -5,10 +5,12 @@ import InputsAsk from './widgets/InputsAsk.jsx';
 import plusIcon from '../../../assets/plus.png';
 import Footer from '../../widgets/Footer.jsx';
 import { useRoute, useNavigation } from '@react-navigation/native';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PORT } from '../../Port';
 const AddPost = () => {
   const route = useRoute();
-  const { brands = [], idUser } = route.params || {};
+  const { brands = [] } = route.params || {};
 console.log(brands);
 
   const [images, setImages] = useState([]);
@@ -20,6 +22,131 @@ console.log(brands);
   const [compositions, setCompositions] = useState([]);
   const [occasion, setOccasion] = useState([]);
   const [infoBrand, setInfoBrand] = useState(brands);
+  const [idUser, setIdUser] = useState(null);
+  // Fetch user ID from AsyncStorage
+  useEffect(() => {
+    const fetchStorage = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('idUser');
+        setIdUser(userId);
+      } catch (e) {
+        console.error('Failed to fetch User ID:', e);
+      }
+    };
+
+    fetchStorage();
+  }, []);
+////////////////////////////////////Axios//////////////////////////////////////////////////////////
+const uploadImage = async (articleId, userId, selectedImage) => {
+  if (!selectedImage) {
+    alert('Please select an image');
+    return;
+  }
+
+  try {
+    // Créer l'objet FormData
+    const formData = new FormData();
+
+    // Récupérer le nom du fichier à partir de l'URI
+    const uriParts = selectedImage.uri.split('/');
+    const fileName = uriParts[uriParts.length - 1];
+    console.log('**********userId*********', userId);
+
+    formData.append('fileUploadpicture', 'profil');
+    formData.append('userId', userId);
+    formData.append('typesignup', 'user');
+    formData.append('file', {
+      uri: selectedImage.uri,
+      type: 'image/jpeg',  // Ou utilisez le type réel si nécessaire
+      name: fileName,
+    });
+
+    // Envoyer au backend
+    const response = await axios.post(`${PORT}/posts/articles/${articleId}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (response.status === 201) {
+      console.log('Image uploaded successfully:', response.data);
+      return response.data.url; // Assurez-vous que l'URL est correctement renvoyée
+    }
+  } catch (error) {
+    console.error('Error uploading image:', error.response ? error.response.data : error.message);
+    throw error;  // Propager l'erreur pour qu'elle soit gérée dans la fonction appelante
+  }
+};
+
+
+const AddPost =async(data)=>{
+  try{
+    const response =await axios.post(`${PORT}/posts/posts`,data);
+    if(response.status===201){
+      console.log("Post added successfully",response.data);
+      return response.data.articleId;
+    }
+    else{
+      console.log("Failed to create post. Please try again.",response.message);
+    }
+  }catch(e){
+    console.log(e);
+  }
+}
+
+
+////////////////////////////////////Axios//////////////////////////////////////////////////////////
+
+
+const handleNext = (selectedImage) => {
+  const uriParts = selectedImage.uri.split('/');
+    const fileName = uriParts[uriParts.length - 1];
+  const infoImage = [
+    {
+      url: fileName, // Assurez-vous que "images[0]" est une chaîne
+      positions: infoBrand.map(({ region, ...rest }) => rest) // Supprimer "region"
+    }
+  ];
+  const postData = {
+    userId: idUser,
+    description:description,
+    category:compositions,
+    occasion:occasion,
+    images:infoImage
+  };
+  console.log("post", JSON.stringify(postData, null, 2));
+  // Send postData to the server or perform necessary actions
+  return postData
+};
+
+const AddnewPost = async () => {
+  try {
+    const postData = handleNext(images[0]); // Préparez les données de publication
+
+    // Créez le post principal
+    const articleId = await AddPost(postData);
+
+    if (!articleId) {
+      alert("Failed to create post. Please try again.");
+      return;
+    }
+
+    // Gérez le téléchargement des images
+    await Promise.all(
+      images.map(async (image) => {
+        console.log("Uploading image:", image);
+        
+        await uploadImage(articleId, idUser, image);
+      })
+    );
+
+    console.log("All images uploaded successfully!");
+    alert("Post added successfully!");
+  } catch (e) {
+    console.error("Error in AddnewPost:", e);
+    alert("An error occurred while adding the post.");
+  }
+};
 
   const handleAddImage = () => {
     if (addImageComponents.length >= 3) {
@@ -34,17 +161,6 @@ console.log(brands);
     ]);
 };
 
-  const handleNext = () => {
-    const postData = {
-      description,
-      compositions,
-      occasion,
-      images,
-      infoBrand
-    };
-    console.log(postData);
-    // Send postData to the server or perform necessary actions
-  };
 
   useEffect(() => {
     if (brands && brands.length > 0) {
@@ -68,9 +184,9 @@ console.log(brands);
         <View style={styles.brandsContainer}>
           {infoBrand.map((brand, index) => (
             <View key={index} style={styles.brandCard}>
-              <Text style={styles.brandText}>{brand.name} - </Text>
-              <Text style={styles.brandText}>{brand.category} - </Text>
-              <Text style={styles.brandText}>{brand.price} $</Text>
+              <Text style={styles.brandText}>{brand.brand} - </Text>
+              <Text style={styles.brandText}>{brand.size} - </Text>
+              <Text style={styles.brandText}>{brand.prix} $</Text>
             </View>
           ))}
         </View>
@@ -86,7 +202,7 @@ console.log(brands);
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <TouchableOpacity style={styles.button} onPress={()=>{AddnewPost()}}>
           <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
       </ScrollView>

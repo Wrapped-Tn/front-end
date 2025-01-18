@@ -54,9 +54,13 @@ const LoginWEmail = () => {
                 console.log(response.data);
                                
                    if(response.data.role=="brand"){
-                       navigation.navigate("whatsHot", { token,idUser,idAuth });
+                       navigation.navigate("ProfilePro", { token,idUser,idAuth });
+                       await AsyncStorage.setItem('role', 'brand');
+
                    }else{
                     navigation.navigate("whatsHot", { token,idUser,idAuth });
+                    await AsyncStorage.setItem('role', 'user');
+
                    }
             } else {
                 throw new Error('Login failed'); // Handle non-200 responses

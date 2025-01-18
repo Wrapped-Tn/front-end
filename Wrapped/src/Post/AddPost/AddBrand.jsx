@@ -48,9 +48,11 @@ const AddBrand = ({ route }) => {
     const saveBrandInfo = () => {
         if (brandName && brandPrice && selectedCategory && selectedRegion) {
             const newBrand = {
-                name: brandName,
-                price: brandPrice,
-                category: selectedCategory,
+                brand: brandName,
+                prix: brandPrice,
+                size: selectedCategory,
+                x: selectedRegion.x,
+                y: selectedRegion.y,
                 region: selectedRegion, // Ajoutez la région sélectionnée
             };
     
@@ -85,9 +87,9 @@ const AddBrand = ({ route }) => {
     // Prépare l'édition d'une marque
     const editBrand = (index) => {
         const brand = brands[index];
-        setBrandName(brand.name);
-        setBrandPrice(brand.price);
-        setSelectedCategory(brand.category);
+        setBrandName(brand.brand);
+        setBrandPrice(brand.prix);
+        setSelectedCategory(brand.size);
         setSelectedRegion(brand.region); // Prise en charge de la région
         setEditingIndex(index);
         setModalVisible(true);
@@ -121,7 +123,7 @@ const AddBrand = ({ route }) => {
                     renderItem={({ item, index }) => (
                         <View style={styles.brandItem}>
                             <Text style={styles.brandText}>
-                            {item.name} - ${item.price} - {item.category}
+                            {item.brand} - ${item.prix} - {item.size}
                             </Text>
                             <View style={styles.actions}>
                                 <TouchableOpacity
