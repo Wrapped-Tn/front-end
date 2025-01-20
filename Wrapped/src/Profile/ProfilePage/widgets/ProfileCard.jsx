@@ -105,7 +105,7 @@ const ProfileCard = () => {
       {/* User Info Section */}
       <View style={styles.userInfo}>
         <Image
-          source={{uri:userCard.profile_picture_url?`${PORT_URL}/uploads/profil/${userCard.role}/${userCard.user_id}/${userCard.profile_picture_url}`:userImg}} 
+          source={{uri:userCard.profile_picture_url?userCard.profile_picture_url:userImg}} 
           style={styles.profileImage}
         />
         <View style={styles.userDetails}>

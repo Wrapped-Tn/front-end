@@ -64,7 +64,7 @@ const ProfilePage = () => {
       </View>
 
       {/* Content Section */}
-      <View style={styles.contentContainer}>
+      <View style={activeTab === 1 && <MyWordrobes />?styles.contentContainer2:styles.contentContainer}>
         {activeTab === 0 && <MyActivitie />}
         {activeTab === 1 && <MyWordrobes />}
       </View>
@@ -120,7 +120,11 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingBottom: "50%",
+    // paddingBottom: "10%",
+  },
+  contentContainer2: {
+    flex: 1,
+    paddingBottom: "251%",
   },
   footerContainer: {},
 });

@@ -7,6 +7,7 @@ import Footer from '../../widgets/Footer.jsx';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
 import { PORT } from '../../Port';
 const AddPost = () => {
   const route = useRoute();
@@ -37,46 +38,6 @@ console.log(brands);
     fetchStorage();
   }, []);
 ////////////////////////////////////Axios//////////////////////////////////////////////////////////
-const uploadImage = async (articleId, userId, selectedImage) => {
-  if (!selectedImage) {
-    alert('Please select an image');
-    return;
-  }
-
-  try {
-    // Créer l'objet FormData
-    const formData = new FormData();
-
-    // Récupérer le nom du fichier à partir de l'URI
-    const uriParts = selectedImage.uri.split('/');
-    const fileName = uriParts[uriParts.length - 1];
-    console.log('**********userId*********', userId);
-
-    formData.append('fileUploadpicture', 'profil');
-    formData.append('userId', userId);
-    formData.append('typesignup', 'user');
-    formData.append('file', {
-      uri: selectedImage.uri,
-      type: 'image/jpeg',  // Ou utilisez le type réel si nécessaire
-      name: fileName,
-    });
-
-    // Envoyer au backend
-    const response = await axios.post(`${PORT}/posts/articles/${articleId}/`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    if (response.status === 201) {
-      console.log('Image uploaded successfully:', response.data);
-      return response.data.url; // Assurez-vous que l'URL est correctement renvoyée
-    }
-  } catch (error) {
-    console.error('Error uploading image:', error.response ? error.response.data : error.message);
-    throw error;  // Propager l'erreur pour qu'elle soit gérée dans la fonction appelante
-  }
-};
 
 
 const AddPost =async(data)=>{
@@ -97,48 +58,48 @@ const AddPost =async(data)=>{
 
 ////////////////////////////////////Axios//////////////////////////////////////////////////////////
 
+const transformToBase64 = async (image) => {
+  const fileBase64 = await FileSystem.readAsStringAsync(image.uri, {
+              encoding: FileSystem.EncodingType.Base64,
+          });
+  return `data:image/jpeg;base64,${fileBase64}`
+}
+const handleNext = async (images) => {
+  // Récupère les images converties en base64
+  const base64Images = await Promise.all(
+    images.map(async (image) => {
+      const fileBase64 = await transformToBase64(image);
+      return {
+        url: fileBase64,
+        positions: infoBrand.map(({ region, ...rest }) => rest), // Supprimer "region"
+      };
+    })
+  );
+console.log(base64Images);
 
-const handleNext = (selectedImage) => {
-  const uriParts = selectedImage.uri.split('/');
-    const fileName = uriParts[uriParts.length - 1];
-  const infoImage = [
-    {
-      url: fileName, // Assurez-vous que "images[0]" est une chaîne
-      positions: infoBrand.map(({ region, ...rest }) => rest) // Supprimer "region"
-    }
-  ];
+  // Préparer les données à envoyer
   const postData = {
     userId: idUser,
-    description:description,
-    category:compositions,
-    occasion:occasion,
-    images:infoImage
+    description: description,
+    category: compositions,
+    occasion: occasion,
+    images: base64Images,
   };
-  console.log("post", JSON.stringify(postData, null, 2));
+
+  // Affichage des données pour vérification
+  console.log("postData:", JSON.stringify(postData, null, 2));
   // Send postData to the server or perform necessary actions
   return postData
 };
 
 const AddnewPost = async () => {
   try {
-    const postData = handleNext(images[0]); // Préparez les données de publication
+    const postData =await handleNext(images); // Préparez les données de publication
 
     // Créez le post principal
-    const articleId = await AddPost(postData);
+     await AddPost(postData);
 
-    if (!articleId) {
-      alert("Failed to create post. Please try again.");
-      return;
-    }
-
-    // Gérez le téléchargement des images
-    await Promise.all(
-      images.map(async (image) => {
-        console.log("Uploading image:", image);
-        
-        await uploadImage(articleId, idUser, image);
-      })
-    );
+    
 
     console.log("All images uploaded successfully!");
     alert("Post added successfully!");

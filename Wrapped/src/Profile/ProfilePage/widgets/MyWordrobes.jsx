@@ -1,21 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import DeleteIcon from '../../../../assets/delete.png';
+import axios from 'axios';
+import {PORT} from '../../../Port'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const MyWordrobes = () => {
-  // State to track images and selected images
-  const [images, setImages] = useState([
-    { id: '1', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-    { id: '2', source: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaP-Rji0gsGL_IgIk2a1hpevSaH1wBJtkCiw&s', selected: false },
-    { id: '3', source: 'https://t4.ftcdn.net/jpg/04/84/87/61/360_F_484876187_u6HIlCgA2iZdfkoOamuQa43OJH2zaDVR.jpg', selected: false },
-    { id: '4', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-    { id: '5', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-    { id: '6', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-    { id: '7', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-    { id: '8', source: 'https://media.voguebusiness.com/photos/65e762aa2a09a98387402ce6/2:3/w_2560%2Cc_limit/pfw-wrap-vogue-business-story.jpg', selected: false },
-  ]);
+  const navigation = useNavigation();
+    const route = useRoute();
 
+  // State to track images and selected images
+  const [images, setImages] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false); // Track if the user is in selecting mode
+  const [idUser, setIdUser] = useState(null); // State for storing the user ID
+
+  // Fetch user ID from AsyncStorage
+  useEffect(() => {
+    const fetchStorage = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('idUser');
+        setIdUser(userId);
+      } catch (e) {
+        console.error('Failed to fetch User ID:', e);
+      }
+    };
+    fetchStorage();
+  }, []);
+/////////////////////////////////////////AXIOS//////////////////////////////////////////////////
+const fetchImages = async () => {
+  try {
+    const response = await axios.get(`${PORT}/posts/posts/wordrobes/${idUser}`);
+    if (response.status === 200) {
+      console.log("Images fetched successfully", response.data);
+
+      const { imageUrls, postIds } = response.data;
+
+      if (!imageUrls || !postIds || imageUrls.length !== postIds.length) {
+        console.error("Mismatch between image URLs and post IDs.");
+        return;
+      }
+
+      // Associer chaque URL d'image avec son ID
+      const posts = imageUrls.map((url, index) => ({
+        id: postIds[index], // Associe l'ID du post
+        source: url,        // URL de l'image
+        selected: false,    // État initial
+      }));
+
+      // Mettre à jour l'état avec les posts associés
+      setImages(posts);
+    } else {
+      console.log("Failed to fetch images. Please try again.");
+    }
+  } catch (e) {
+    console.log("An error occurred while fetching images:", e);
+  }
+};
+ useEffect(() => {
+    if (idUser) {
+      fetchImages();
+    }
+  }, [idUser]);
+/////////////////////////////////////////AXIOS//////////////////////////////////////////////////
+
 
   // Toggle selection mode when the "Select" button is clicked
   const handleSelectToggle = () => {
@@ -49,7 +97,7 @@ const MyWordrobes = () => {
         styles.imageContainer,
         item.selected && styles.selectedImage // Highlight selected image
       ]}
-      onPress={() => isSelecting && toggleImageSelection(item.id)} // Only allow selection in "selecting mode"
+      onPress={() => {isSelecting ? toggleImageSelection(item.id):navigation.navigate("PostDetails",{PostId:item.id,idUser})}} // Only allow selection in "selecting mode"
     >
       <Image
         source={{ uri: item.source }}
@@ -146,8 +194,8 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   image: {
-    width: '100%',
-    height: 300,
+    width: '90%',
+    height: 200,
     borderRadius: 10,
   },
   selectedImage: {

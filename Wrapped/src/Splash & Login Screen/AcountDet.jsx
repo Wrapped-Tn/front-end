@@ -190,13 +190,15 @@ const validateBirthDate = (birthDate) => {
 };
 
 // Fonction pour nettoyer et préparer les données de l'utilisateur
-const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion, birthDate, password) => {
+const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion, birthDate, password,profile_picture_url) => {
     const sanitizedEmail = email;
     const sanitizedFullname = fullname;
     const sanitizedPhone = phonenbr;
-    
+   
     try {
-       
+        const fileBase64 = await FileSystem.readAsStringAsync(profile_picture_url, {
+            encoding: FileSystem.EncodingType.Base64,
+        });
         return {
             email: sanitizedEmail,
             password: password, 
@@ -206,6 +208,7 @@ const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion
             grade: idgrade,
             region: selectedRegion,
             birthdate: birthDate,
+            profile_picture_url: `data:image/jpeg;base64,${fileBase64}`,
         };
     } catch (error) {
         console.error('Error fetching grade:', error); // Log l'erreur de la requête
@@ -218,20 +221,18 @@ const PrepareUserData = async (email, fullname, phonenbr, genreA, selectedRegion
 
 // Fonction pour envoyer la requête et créer l'utilisateur
 const addUser = async (userData, setShowSpiner, navigation, genre) => {
+    console.log('**********userData*********',userData);
+    
     try {
         // IntitalGrade()
         // if(idgrade){
 
             const response = await axios.post(`${PORT}/users/`, userData);
             if (response.status === 200) {
-                const img = await uploadImage(response?.data?.userId);
-                if(!img){
-                    alert('Error uploading image');
-                }
+                // const img = await uploadImage(response?.data?.userId);
+               
                 setShowSpiner(false); 
                 navigation.navigate("LoginWEmail", { genre });
-            } else {
-                throw new Error('Failed to add user'); // Gère les autres statuts
             }
         // }
 
@@ -254,11 +255,12 @@ const AddNewUser = async () => {
     setShowSpiner(true);
 
     try {
-        console.log(PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password));
+        console.log(PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password,selectedImage.uri));
 
         
         // Attends que la fonction prepareUserData retourne les données avant de continuer
-        const userData = await PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password);
+        const userData = await PrepareUserData(email, fullname, phonenbr, genreA, selectedRegion, birthDate, password,selectedImage.uri);
+        console.log('**********userData*********',userData);
 
         // Vérifie si les données utilisateur sont correctement préparées
         if (!userData) {

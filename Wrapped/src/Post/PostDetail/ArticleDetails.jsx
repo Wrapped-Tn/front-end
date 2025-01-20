@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Text, ActivityIndicator } from 'react-native';
 import ImageWidget from './Widgets/ImageWidget';
 import TagsWidget from './Widgets/TagsWidget';
 import CaptionWidget from './Widgets/CaptionWidget';
@@ -9,31 +9,106 @@ import CommentWidget from './Widgets/CommentWidget.jsx';
 import SizeSelectorPopup from './Widgets/SizeSelectorPopup.jsx';
 import UserDetails from './Widgets/UserDetailsPost.jsx';
 import Footer from '../../widgets/Footer.jsx';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import {PORT} from '../../Port.jsx';
 
 const ArticleDetails = () => {
-    const imageSource = { uri: 'https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c=' };
-    const tags = ['sport', 'classique'];
-    const caption = 'This is a sample caption';
-    const buttons = ['Button 1', 'Button 2', 'Button 3'];
-    const userName="John Doe"
-    const userIcon="https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c="
-    const postDate="January 8, 2025"
-    const [showPop,setShowPop]=useState(false)
-    const handleAddCart=()=>{
-      console.log('hello');
-      setShowPop(true);
-    }
-    const handleClosePopup = () => {
-      setShowPop(false);
-    };
+        const route = useRoute();
+        const {PostId,idUser} = route.params;
+        const [onePost, setOnePost] = useState(null); // Initialisez à null
+        const [userProfile, setUserProfile] = useState(null); // Initialisez à null
+        const [showPop, setShowPop] = useState(false);
+        const [isLoading, setIsLoading] = useState(true); // Ajoutez un état pour le chargement
+        
+        const handleAddCart = () => {
+            setShowPop(true);
+        };
+        
+        const handleClosePopup = () => {
+            setShowPop(false);
+        };
+        
+        // Formatage de la date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear().toString().slice(-2);
+            let hours = date.getHours();
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+        }
+    
+        // Récupérer un post spécifique
+        const getOnePost = async () => {
+            try {
+                const response = await axios.get(`${PORT}/posts/posts/user/${idUser}/${PostId}`);
+                if (response.status === 200) {
+                    setOnePost(response.data);
+                } else {
+                    console.log('Erreur dans la récupération du post');
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        };
+    
+        // Récupérer le profil de l'utilisateur
+        const getUserProfile = async () => {
+            try {
+                const response = await axios.get(`${PORT}/users/userProfile/${idUser}`);
+                if (response.status === 200) {
+                    setUserProfile(response.data);
+                } else {
+                    console.log('Erreur dans la récupération du profil');
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        };
+    
+        // Charger les données au montage
+        useEffect(() => {
+            setIsLoading(true); // Déclenche le chargement
+            getOnePost();
+            getUserProfile();
+        }, []);
+    
+        // Lorsque les deux données sont chargées, on modifie l'état de chargement
+        useEffect(() => {
+            if (onePost && userProfile) {
+                setIsLoading(false); // Données chargées
+            }
+        }, [onePost, userProfile]);
+    
+        if (isLoading) {
+            return (
+                <View style={styles.mainContainer}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text>Chargement des données...</Text>
+                </View>
+            );
+        }
+    
+        console.log('OnePost :', onePost.post.PostImages[0].PostPositions);
+        
+        // Si les données sont prêtes
+        const imageSource = { uri: onePost.post.PostImages[0].url };
+        const caption = onePost.post.description;
+        const tags = [...onePost.post.category, ...onePost.post.occasion];
+
+////////////////////////////////////////////////////AXIOS///////////////////////////////////////////////////////////////////    
     return (
         <View style={styles.mainContainer}>
-            <UserDetails 
-             userName="John Doe"
-             userIcon="https://media.istockphoto.com/id/1018293976/photo/attractive-fashionable-woman-posing-in-white-trendy-sweater-beige-pants-and-autumn-heels-on.jpg?s=612x612&w=0&k=20&c=_CLawpZw6l9z0uV4Uon-7lqaS013E853ub883pkIK3c="
-             postDate="January 8, 2025"
+            <UserDetails
+                userName={userProfile.full_name}
+                userIcon={userProfile.profile_picture_url}
+                postDate={onePost.post.createdAt?formatDate(onePost.post.createdAt):'this week'}
             />
-            <ImageWidget imageSource={imageSource} />
+            <ImageWidget imageSource={imageSource} brands={onePost.post.PostImages[0].PostPositions} />
             <ActionsWidget handleAddCart={handleAddCart} />
             
             <ScrollView style={styles.captionContainer}>
