@@ -5,6 +5,9 @@ import HotPosts from '../Post/PostDetail/HotPosts.jsx';
 import Footer from '../widgets/Footer.jsx';
 
 const WhatsHotV2 = () => {
+    const imageSources = [
+        { uri: 'https://th.bing.com/th/id/OIP.vzx5Y7Bt_zpR8SYLJ2RoLwHaKe?rs=1&pid=ImgDetMain' },
+      ];
     return (
         <SafeAreaView style={styles.safeArea}> 
         
@@ -18,7 +21,7 @@ const WhatsHotV2 = () => {
                             userName={`User ${item}`}
                             userIcon={`https://th.bing.com/th/id/OIP.vzx5Y7Bt_zpR8SYLJ2RoLwHaKe?rs=1&pid=ImgDetMain`}
                             postDate={`2025-01-14`}
-                            imageSource={{uri:`https://th.bing.com/th/id/OIP.vzx5Y7Bt_zpR8SYLJ2RoLwHaKe?rs=1&pid=ImgDetMain`}}
+                            imageSource={{uri:'https://th.bing.com/th/id/OIP.vzx5Y7Bt_zpR8SYLJ2RoLwHaKe?rs=1&pid=ImgDetMain'}}
                             caption={`Ceci est la légende du post ${item}`}
                             tags={[`#tag${item}`, `#post${item}`]}
                         />

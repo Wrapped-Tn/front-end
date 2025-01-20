@@ -14,7 +14,8 @@ import { NativeBaseProvider } from 'native-base';
 import { Picker } from '@react-native-picker/picker'; // Ajoutez cette dépendance si nécessaire
 import { useNavigation } from '@react-navigation/native'; // Importer la navigation
 import Icon from 'react-native-vector-icons/FontAwesome5'; // Importer les icônes FontAwesome5
-
+import axios from 'axios';
+import { PORT } from '../../Port';
 
 const AddBrand = ({ route }) => {
     const { image } = route.params; // Récupère l'image depuis les paramètres
@@ -27,9 +28,27 @@ const AddBrand = ({ route }) => {
     const [selectedRegion, setSelectedRegion] = useState(null); // Région sélectionnée
     const [brands, setBrands] = useState([]); // Liste des marques ajoutées
     const [editingIndex, setEditingIndex] = useState(null); // Marque en cours de modification
+    const [results, setResults] = useState([]); // Résultats de la recherche
 
     const categories = ['S', 'M', 'L', 'XL', 'XXL']; 
 
+    /////////////////////////////////////////AXIOS////////////////////////////////////////////////////////
+    const SearchBrandName =async()=>{
+        try{
+            const response =await axios.post(`${PORT}/brands/searchbyname`,{
+                params: { search: brandName }
+            });
+            if(response.status===200){
+                setResults(response.data);
+            }
+            else{
+              console.log("Failed to find brand. Please try again.",response.message);
+            }
+          }catch(e){
+            console.log(e);
+          }
+    }
+    /////////////////////////////////////////AXIOS////////////////////////////////////////////////////////
     // Fonction pour ouvrir le modal
     const openModal = () => {
         setModalVisible(true);

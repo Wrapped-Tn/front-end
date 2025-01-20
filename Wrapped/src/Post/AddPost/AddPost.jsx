@@ -75,7 +75,7 @@ const handleNext = async (images) => {
       };
     })
   );
-console.log(base64Images);
+// console.log(base64Images);
 
   // Préparer les données à envoyer
   const postData = {
