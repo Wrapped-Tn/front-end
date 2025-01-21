@@ -33,12 +33,11 @@ const AddBrand = ({ route }) => {
     const categories = ['S', 'M', 'L', 'XL', 'XXL']; 
 
     /////////////////////////////////////////AXIOS////////////////////////////////////////////////////////
-    const SearchBrandName =async()=>{
+    const SearchBrandName =async(text)=>{
         try{
-            const response =await axios.post(`${PORT}/brands/searchbyname`,{
-                params: { search: brandName }
-            });
+            const response =await axios.post(`${PORT}/brands/searchbyname?search=${text}`);
             if(response.status===200){
+                console.log("Results:", response.data); // Log pour débogage                
                 setResults(response.data);
             }
             else{
@@ -113,6 +112,19 @@ const AddBrand = ({ route }) => {
         setEditingIndex(index);
         setModalVisible(true);
     };
+
+    const DoSearch = async (text) => {
+        setBrandName(text); // Met à jour le texte du champ
+        if (text.length > 0) { // Exécute la recherche uniquement si le texte n'est pas vide
+            await SearchBrandName(text);
+        } else {
+            setResults([]); // Réinitialise les résultats si le champ est vide
+        }
+    };
+    const SaveName=(item)=>{
+        setBrandName(item)
+        setResults([])
+    }
 
     return (
         <NativeBaseProvider>
@@ -202,12 +214,27 @@ const AddBrand = ({ route }) => {
             {/* Formulaire pour les informations */}
             {selectedRegion && (
                 <View style={styles.formContainer}>
-                    <TextInput
-                        placeholder="Enter brand name"
-                        value={brandName}
-                        onChangeText={setBrandName}
-                        style={styles.input}
-                    />
+                        <TextInput
+                placeholder="Enter brand name"
+                value={brandName}
+                onChangeText={(text) => 
+                     DoSearch(text)
+                }
+                style={styles.input}
+                returnKeyType="search"
+            />
+             {results.length > 0 && (
+                <FlatList
+                    data={results}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={()=>SaveName(item.brand_name)} style={styles.listItem}>
+                            {/* Affiche uniquement brand_name */}
+                            <Text style={styles.listText}>{item.brand_name}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
                     <TextInput
                         placeholder="Enter brand price"
                         value={brandPrice}
@@ -348,6 +375,14 @@ const styles = StyleSheet.create({
     //     marginBottom: 15,
     //     padding: 5,
     // },
+    listItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc",
+    },
+    listText: {
+        fontSize: 16,
+    },
     saveButton: {
         backgroundColor: '#AD669E',
         padding: 10,
